@@ -1,0 +1,126 @@
+name: Validate task workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate branch name
+        shell: bash
+        run: |
+          BRANCH="${{ github.head_ref }}"
+
+          echo "Branch: $BRANCH"
+
+          if [[ "$BRANCH" == "main" ]]; then
+            echo "Direct work from main is not allowed."
+            exit 1
+          fi
+
+          if [[ ! "$BRANCH" =~ ^(codex|claude|cursor|human)/CA-[0-9]+-[a-z0-9-]+$ ]]; then
+            echo "Invalid branch name."
+            echo "Expected format:"
+            echo "  <actor>/CA-<number>-<slug>"
+            echo
+            echo "Examples:"
+            echo "  codex/CA-001-api-client"
+            echo "  claude/CA-002-auth-research"
+            echo "  cursor/CA-003-dashboard-ui"
+            echo "  human/CA-004-dashboard-foundation"
+            exit 1
+          fi
+
+      - name: Extract task ID
+        id: task
+        shell: bash
+        run: |
+          BRANCH="${{ github.head_ref }}"
+
+          TASK_ID=$(echo "$BRANCH" | grep -oE 'CA-[0-9]+')
+
+          if [[ -z "$TASK_ID" ]]; then
+            echo "Could not extract Task ID from branch."
+            exit 1
+          fi
+
+          echo "Task ID: $TASK_ID"
+          echo "task_id=$TASK_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Validate PR Task ID
+        shell: bash
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          TASK_ID: ${{ steps.task.outputs.task_id }}
+        run: |
+          echo "Expected Task ID: $TASK_ID"
+
+          if grep -q "$TASK_ID" <<< "$PR_TITLE"; then
+            echo "Task ID found in PR title."
+            exit 0
+          fi
+
+          if grep -q "$TASK_ID" <<< "$PR_BODY"; then
+            echo "Task ID found in PR body."
+            exit 0
+          fi
+
+          echo "Pull request does not contain Task ID: $TASK_ID"
+          exit 1
+
+      - name: Validate agent log
+        shell: bash
+        env:
+          TASK_ID: ${{ steps.task.outputs.task_id }}
+        run: |
+          LOG_FILE="agent-logs/${TASK_ID}.md"
+
+          echo "Expected log: $LOG_FILE"
+
+          if [[ ! -f "$LOG_FILE" ]]; then
+            echo "Missing task log: $LOG_FILE"
+            exit 1
+          fi
+
+      - name: Validate required log sections
+        shell: bash
+        env:
+          TASK_ID: ${{ steps.task.outputs.task_id }}
+        run: |
+          LOG_FILE="agent-logs/${TASK_ID}.md"
+
+          REQUIRED_SECTIONS=(
+            "## Summary"
+            "## Actions"
+            "## Decisions"
+            "## Problems encountered"
+            "## Assumptions"
+            "## Validation"
+            "## Unfinished work"
+            "## Recommended follow-up"
+          )
+
+          for SECTION in "${REQUIRED_SECTIONS[@]}"; do
+            if ! grep -Fq "$SECTION" "$LOG_FILE"; then
+              echo "Missing section in $LOG_FILE:"
+              echo "$SECTION"
+              exit 1
+            fi
+          done
+
+          echo "Task workflow validation passed."
