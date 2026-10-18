@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Schemat JSON zadania</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <p class="eyebrow">Dokumentacja danych</p>
+        <h1>Schemat JSON zadania</h1>
+        <p class="lead">Prosty format do opisywania postępu i szczegółów pojedynczego zadania.</p>
+      </header>
+
+      <section class="schema" aria-labelledby="schema-heading">
+        <div class="section-heading">
+          <h2 id="schema-heading">Plik <code>task-schema.json</code></h2>
+          <span>JSON Schema</span>
+        </div>
+        <pre><code>{
+  "id_zadania": "ZAD-001",
+  "nazwa_zadania": "Przygotowanie raportu",
+  "krotki_opis": "Przygotowanie miesięcznego zestawienia wyników.",
+  "status": "w_trakcie",
+  "wykonane_kroki": [
+    "Zebrano dane",
+    "Utworzono wstępną wersję raportu"
+  ],
+  "zastosowane_narzedzia": [
+    "Arkusz kalkulacyjny",
+    "Edytor tekstu"
+  ]
+}</code></pre>
+      </section>
+
+      <section aria-labelledby="fields-heading">
+        <h2 id="fields-heading">Opis pól</h2>
+        <div class="fields">
+          <article><code>id_zadania</code><p>Unikalny identyfikator zadania, np. <code>ZAD-001</code>.</p></article>
+          <article><code>nazwa_zadania</code><p>Krótka i zrozumiała nazwa zadania.</p></article>
+          <article><code>krotki_opis</code><p>Zwięzły opis celu lub zakresu prac.</p></article>
+          <article><code>status</code><p>Jeden z etapów: <code>nowe</code>, <code>w_trakcie</code>, <code>zrealizowane</code> lub <code>zablokowane</code>.</p></article>
+          <article><code>wykonane_kroki</code><p>Tablica z listą działań już wykonanych.</p></article>
+          <article><code>zastosowane_narzedzia</code><p>Tablica zawierająca nazwy użytych narzędzi.</p></article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

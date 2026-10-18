@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Szczegóły zadania",
+  "description": "Schemat danych opisujących pojedyncze zadanie.",
+  "type": "object",
+  "required": [
+    "id_zadania",
+    "nazwa_zadania",
+    "krotki_opis",
+    "status",
+    "wykonane_kroki",
+    "zastosowane_narzedzia"
+  ],
+  "properties": {
+    "id_zadania": {
+      "type": "string",
+      "description": "Unikalny identyfikator zadania.",
+      "examples": ["ZAD-001"]
+    },
+    "nazwa_zadania": {
+      "type": "string",
+      "description": "Krótka, czytelna nazwa zadania.",
+      "examples": ["Przygotowanie raportu"]
+    },
+    "krotki_opis": {
+      "type": "string",
+      "description": "Zwięzłe wyjaśnienie celu zadania.",
+      "examples": ["Przygotowanie miesięcznego zestawienia wyników."]
+    },
+    "status": {
+      "type": "string",
+      "description": "Aktualny etap realizacji zadania.",
+      "enum": ["nowe", "w_trakcie", "zrealizowane", "zablokowane"]
+    },
+    "wykonane_kroki": {
+      "type": "array",
+      "description": "Lista ukończonych działań.",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["Zebrano dane", "Przygotowano raport"]]
+    },
+    "zastosowane_narzedzia": {
+      "type": "array",
+      "description": "Lista narzędzi wykorzystanych w zadaniu.",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["Arkusz kalkulacyjny", "Edytor tekstu"]]
+    }
+  },
+  "additionalProperties": false
+}
