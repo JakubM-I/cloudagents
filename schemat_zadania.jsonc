@@ -1,0 +1,19 @@
+{
+  // Unikalny identyfikator zadania, np. "ZAD-001".
+  "id_zadania": "",
+
+  // Krótka, zrozumiała nazwa zadania.
+  "nazwa_zadania": "",
+
+  // Zwięzłe wyjaśnienie celu i zakresu zadania.
+  "opis": "",
+
+  // Aktualny etap realizacji, np. "do_zrobienia", "w_toku", "zakończone" lub "zablokowane".
+  "status": "do_zrobienia",
+
+  // Lista wykonanych kroków; każdy wpis opisuje jedną ukończoną czynność.
+  "wykonane_kroki": [],
+
+  // Lista narzędzi, technologii lub usług użytych do realizacji zadania.
+  "zastosowane_narzedzia": []
+}
