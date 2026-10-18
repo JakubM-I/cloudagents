@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-schema.json",
+  "title": "Task details",
+  "description": "Describes a single task: what it is, where it stands, what was done and which tools were used.",
+  "type": "object",
+  "required": ["id", "name", "description", "status", "steps", "tools"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique task identifier.",
+      "pattern": "^CA-[0-9]+$",
+      "examples": ["CA-003"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Short, human-readable task name.",
+      "minLength": 1,
+      "examples": ["JSON task template page"]
+    },
+    "description": {
+      "type": "string",
+      "description": "One or two sentences explaining the goal of the task.",
+      "examples": ["Create a JSON schema for task details and a static page that presents it."]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current stage of the task.",
+      "enum": ["todo", "in_progress", "completed", "partial", "blocked"]
+    },
+    "steps": {
+      "type": "array",
+      "description": "Ordered list of steps that have been completed.",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tools": {
+      "type": "array",
+      "description": "Tools, languages or services used to carry out the task.",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

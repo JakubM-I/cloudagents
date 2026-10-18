@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task JSON Schema</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="container">
+        <p class="eyebrow">Template</p>
+        <h1>Task JSON Schema</h1>
+        <p class="lead">A simple JSON format for describing a task: its identity, status, completed steps and the tools used.</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="window" aria-labelledby="window-title">
+        <div class="window-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <h2 id="window-title" class="window-title">task-schema.json</h2>
+          <div class="tabs" role="tablist" aria-label="File to display">
+            <button type="button" role="tab" id="tab-schema" aria-controls="panel-schema" aria-selected="true">Schema</button>
+            <button type="button" role="tab" id="tab-example" aria-controls="panel-example" aria-selected="false" tabindex="-1">Example</button>
+          </div>
+          <button type="button" class="copy" id="copy">Copy</button>
+        </div>
+
+        <pre id="panel-schema" role="tabpanel" aria-labelledby="tab-schema" tabindex="0"><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-schema.json",
+  "title": "Task details",
+  "description": "Describes a single task: what it is, where it stands, what was done and which tools were used.",
+  "type": "object",
+  "required": ["id", "name", "description", "status", "steps", "tools"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique task identifier.",
+      "pattern": "^CA-[0-9]+$",
+      "examples": ["CA-003"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Short, human-readable task name.",
+      "minLength": 1,
+      "examples": ["JSON task template page"]
+    },
+    "description": {
+      "type": "string",
+      "description": "One or two sentences explaining the goal of the task.",
+      "examples": ["Create a JSON schema for task details and a static page that presents it."]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current stage of the task.",
+      "enum": ["todo", "in_progress", "completed", "partial", "blocked"]
+    },
+    "steps": {
+      "type": "array",
+      "description": "Ordered list of steps that have been completed.",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tools": {
+      "type": "array",
+      "description": "Tools, languages or services used to carry out the task.",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}</code></pre>
+
+        <pre id="panel-example" role="tabpanel" aria-labelledby="tab-example" tabindex="0" hidden><code>{
+  "id": "CA-003",
+  "name": "JSON task template page",
+  "description": "Create a JSON schema for task details and a static page that presents it.",
+  "status": "completed",
+  "steps": [
+    "Defined the task schema",
+    "Wrote an example task",
+    "Built the presentation page"
+  ],
+  "tools": ["HTML", "CSS", "JavaScript", "Git"]
+}</code></pre>
+      </section>
+
+      <section class="fields" aria-labelledby="fields-title">
+        <h2 id="fields-title">Fields</h2>
+        <p class="note">All fields are required. No other fields are allowed.</p>
+
+        <dl>
+          <div class="field">
+            <dt><code>id</code> <span class="type">string</span></dt>
+            <dd>Unique task identifier in the format <code>CA-&lt;number&gt;</code>, e.g. <code>CA-003</code>.</dd>
+          </div>
+          <div class="field">
+            <dt><code>name</code> <span class="type">string</span></dt>
+            <dd>Short, human-readable task name. Cannot be empty.</dd>
+          </div>
+          <div class="field">
+            <dt><code>description</code> <span class="type">string</span></dt>
+            <dd>Brief description of the task goal, one or two sentences.</dd>
+          </div>
+          <div class="field">
+            <dt><code>status</code> <span class="type">enum</span></dt>
+            <dd>
+              Current stage of the task. One of:
+              <span class="badges">
+                <span class="badge">todo</span>
+                <span class="badge">in_progress</span>
+                <span class="badge">completed</span>
+                <span class="badge">partial</span>
+                <span class="badge">blocked</span>
+              </span>
+            </dd>
+          </div>
+          <div class="field">
+            <dt><code>steps</code> <span class="type">string[]</span></dt>
+            <dd>Ordered list of completed steps. May be empty for a task that has not started.</dd>
+          </div>
+          <div class="field">
+            <dt><code>tools</code> <span class="type">string[]</span></dt>
+            <dd>Tools, languages or services used in the task. Each entry must be unique.</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+
+    <footer class="container page-footer">
+      Files: <code>task-schema.json</code> · <code>example-task.json</code>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

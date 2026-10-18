@@ -1,0 +1,12 @@
+{
+  "id": "CA-003",
+  "name": "JSON task template page",
+  "description": "Create a JSON schema for task details and a static page that presents it.",
+  "status": "completed",
+  "steps": [
+    "Defined the task schema",
+    "Wrote an example task",
+    "Built the presentation page"
+  ],
+  "tools": ["HTML", "CSS", "JavaScript", "Git"]
+}
