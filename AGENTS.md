@@ -2,345 +2,89 @@
 
 ## Purpose
 
-This repository is used to coordinate and compare work performed by multiple coding agents.
+This repository is used to coordinate and compare work performed by multiple AI agents.
 
-The shared workflow must be predictable, auditable, and easy to analyze later.
-
-The canonical branch is:
-
-`main`
-
-All agent work must start from the latest `main`.
+`main` is the canonical source of truth.
 
 ---
 
-## Supported agents
+## General rules
 
-Agent-specific task branches must use one of these prefixes:
+- Do not work directly on `main`.
+- Start every new task from the latest `main`.
+- Use one branch per task.
+- Keep each task focused on its assigned scope.
+- Do not mix unrelated changes into one task.
+- Every agent task must have a unique task ID in the format:
 
-- `codex/`
-- `claude/`
-- `cursor/`
+  `CA-<number>`
 
-Human-created branches are not subject to the agent workflow rules defined below.
+- Every agent task must create a task log:
 
----
+  `agent-logs/<TASK-ID>.md`
 
-## Source of truth
-
-`main` is the canonical source of truth for the repository.
-
-Before starting a new task:
-
-1. fetch the latest repository state,
-2. update from `main`,
-3. create a new task-specific branch from the latest `main`.
-
-Do not continue work from an old agent branch unless the task explicitly requires it.
-
-Do not work directly on `main`.
+- Every agent task must end with a pull request to `main`.
+- Do not bypass repository validation or branch protection rules.
+- If a task cannot be completed, clearly document the blocker and unfinished work.
+- Do not claim validation or completion that did not actually happen.
 
 ---
 
-## Task IDs
+## Agent branch prefixes
 
-Every agent task must have a unique task ID.
+Use the appropriate branch prefix:
 
-Format:
+- Codex: `codex/`
+- Claude: `claude/`
+- Cursor: `cursor/`
 
-`CA-<number>`
-
-Examples:
-
-- `CA-001`
-- `CA-002`
-- `CA-017`
-
-The same task ID must be used consistently in:
-
-- branch name,
-- pull request,
-- task log.
-
----
-
-## Branch naming
-
-Create one branch per task.
-
-Required format:
+Recommended format:
 
 `<agent>/CA-<number>-<slug>`
 
-Examples:
-
-- `codex/CA-001-api-client`
-- `claude/CA-002-auth-research`
-- `cursor/CA-003-dashboard-ui`
-
-Rules:
-
-- use lowercase for the slug,
-- separate words with hyphens,
-- keep the slug concise,
-- do not reuse an existing task ID,
-- do not work directly on `main`.
-
----
-
-## Task workflow
-
-For every agent task:
-
-1. Start from the latest `main`.
-2. Create a new task branch.
-3. Perform only work related to the assigned task.
-4. Validate the result appropriately.
-5. Create or update the task log.
-6. Commit the task-related changes.
-7. Push the task branch.
-8. Open a pull request to `main`.
-9. Ensure the task ID appears in the PR title or body.
-10. Do not merge directly into `main`.
-
-The task is not considered complete until the pull request has been created.
-
----
-
-## Pull requests
-
-Every agent task must end with a pull request to `main`.
-
-Recommended PR title format:
-
-`[CA-001] Short task description`
-
-The PR must include the task ID either in:
-
-- the title,
-- or the PR body.
-
-The PR must reference the corresponding agent log:
-
-`agent-logs/CA-001.md`
-
-Do not bypass the repository validation workflow.
-
-Do not merge directly into `main`.
-
----
-
-## Commits
-
-Commits should:
-
-- contain only changes related to the current task,
-- use clear and concise messages,
-- avoid unrelated cleanup,
-- avoid mixing multiple tasks in one branch.
-
-Multiple commits are allowed during development.
-
-The repository may squash commits when merging the PR.
-
----
-
-## Agent task log
-
-Every agent task must create:
-
-`agent-logs/<TASK-ID>.md`
-
 Example:
 
-`agent-logs/CA-001.md`
+`codex/CA-001-api-client`
 
-Use the structure defined in:
+---
+
+## Task logs
+
+Use:
 
 `agent-logs/TEMPLATE.md`
 
-The log is part of the task deliverable.
+Task logs should explain:
 
-Do not omit it.
-
----
-
-## Required task log content
-
-The log must contain these sections:
-
-- `## Summary`
-- `## Actions`
-- `## Decisions`
-- `## Problems encountered`
-- `## Assumptions`
-- `## Validation`
-- `## Unfinished work`
-- `## Recommended follow-up`
-
-If a section has nothing to report, write:
-
-`None`
-
-Do not remove the section.
+- what was done,
+- important decisions,
+- problems encountered,
+- assumptions,
+- validation performed,
+- unfinished work,
+- recommended follow-up.
 
 ---
 
-## Logging guidelines
+## Tool-specific instructions
 
-The task log should describe the work semantically, not merely repeat the Git diff.
+Each agent must also follow its tool-specific instructions.
 
-Good examples:
+- Codex: `.codex/WORKFLOW.md`
+- Claude: `CLAUDE.md` and `.claude/`
+- Cursor: `.cursor/`
 
-- why a solution was chosen,
-- which alternative was rejected,
-- what assumptions were made,
-- what limitations were discovered,
-- what remains unfinished,
-- what should be checked later.
-
-Avoid vague statements such as:
-
-- "updated files",
-- "fixed issue",
-- "made improvements".
-
-Prefer concrete descriptions.
-
----
-
-## Validation
-
-Validation depends on the type of task.
-
-Examples may include:
-
-- tests,
-- build,
-- lint,
-- static analysis,
-- manual inspection,
-- documentation review,
-- API verification,
-- consistency checks,
-- research verification.
-
-Do not claim validation that was not actually performed.
-
-The task log must clearly state what was and was not validated.
-
----
-
-## Problems and blockers
-
-If the task cannot be fully completed:
-
-- do not hide the problem,
-- do not invent a successful result,
-- document the blocker,
-- describe completed work,
-- describe unfinished work,
-- describe assumptions,
-- recommend the next step.
-
-A partially completed task may still create a PR if the result is useful and clearly documented.
-
----
-
-## Conflicts and repository state
-
-If the task branch is outdated or conflicts with `main`:
-
-1. fetch the latest repository state,
-2. inspect the conflict,
-3. integrate the latest `main`,
-4. resolve conflicts carefully,
-5. re-run relevant validation,
-6. update the task log if the conflict affected the implementation.
-
-Do not overwrite unrelated changes from other tasks.
+Tool-specific instructions may define execution details, but must not contradict the repository-wide rules in this file.
 
 ---
 
 ## Scope control
 
-Stay within the assigned task.
-
 Do not:
 
 - refactor unrelated code,
-- rename unrelated files,
-- change repository structure without need,
-- modify agent workflow files unless the task explicitly requires it,
-- introduce unrelated dependencies.
+- modify unrelated files,
+- change repository workflow files unless the task explicitly requires it,
+- silently expand the task scope.
 
-If you discover a separate problem, document it under:
-
-`## Recommended follow-up`
-
-instead of silently expanding the task.
-
----
-
-## Repository workflow files
-
-Do not modify these files unless the task explicitly concerns repository workflow:
-
-- `AGENTS.md`
-- `CLAUDE.md`
-- `.github/workflows/`
-- `.github/pull_request_template.md`
-- `agent-logs/TEMPLATE.md`
-
-If such a change is necessary, explain it clearly in the task log.
-
----
-
-## Completion criteria
-
-An agent task is complete only when:
-
-- the assigned work is finished or clearly documented as partial,
-- validation has been performed as appropriate,
-- `agent-logs/<TASK-ID>.md` exists,
-- the log contains all required sections,
-- changes are committed,
-- the branch is pushed,
-- a pull request to `main` exists,
-- the task ID is present in the PR title or body.
-
-After creating the PR, report:
-
-- task ID,
-- branch name,
-- PR,
-- validation performed,
-- any blockers or unfinished work.
-
----
-
-## Human work
-
-Human-created branches are outside the mandatory agent logging workflow.
-
-Human work may use any branch naming convention unless repository rules require otherwise.
-
-Agent-specific validation applies only to branches beginning with:
-
-- `codex/`
-- `claude/`
-- `cursor/`
-
----
-
-## General rule
-
-Prefer explicit, traceable work over hidden assumptions.
-
-Every agent task should leave enough information for another person or agent to understand:
-
-- what was requested,
-- what was changed,
-- why it was changed,
-- how it was validated,
-- what remains to be done.
+If you discover additional work, document it in the task log under `Recommended follow-up`.
