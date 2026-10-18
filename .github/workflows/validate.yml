@@ -20,32 +20,43 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate branch name
+      - name: Detect agent branch
+        id: actor
         shell: bash
         run: |
           BRANCH="${{ github.head_ref }}"
 
           echo "Branch: $BRANCH"
 
-          if [[ "$BRANCH" == "main" ]]; then
-            echo "Direct work from main is not allowed."
-            exit 1
+          if [[ "$BRANCH" =~ ^(codex|claude|cursor)/ ]]; then
+            echo "is_agent=true" >> "$GITHUB_OUTPUT"
+            echo "Agent branch detected."
+          else
+            echo "is_agent=false" >> "$GITHUB_OUTPUT"
+            echo "Human/non-agent branch detected."
           fi
 
-          if [[ ! "$BRANCH" =~ ^(codex|claude|cursor|human)/CA-[0-9]+-[a-z0-9-]+$ ]]; then
-            echo "Invalid branch name."
+      - name: Validate agent branch name
+        if: steps.actor.outputs.is_agent == 'true'
+        shell: bash
+        run: |
+          BRANCH="${{ github.head_ref }}"
+
+          if [[ ! "$BRANCH" =~ ^(codex|claude|cursor)/CA-[0-9]+-[a-z0-9-]+$ ]]; then
+            echo "Invalid agent branch name."
+            echo
             echo "Expected format:"
-            echo "  <actor>/CA-<number>-<slug>"
+            echo "  <agent>/CA-<number>-<slug>"
             echo
             echo "Examples:"
             echo "  codex/CA-001-api-client"
             echo "  claude/CA-002-auth-research"
             echo "  cursor/CA-003-dashboard-ui"
-            echo "  human/CA-004-dashboard-foundation"
             exit 1
           fi
 
       - name: Extract task ID
+        if: steps.actor.outputs.is_agent == 'true'
         id: task
         shell: bash
         run: |
@@ -62,6 +73,7 @@ jobs:
           echo "task_id=$TASK_ID" >> "$GITHUB_OUTPUT"
 
       - name: Validate PR Task ID
+        if: steps.actor.outputs.is_agent == 'true'
         shell: bash
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
@@ -83,7 +95,8 @@ jobs:
           echo "Pull request does not contain Task ID: $TASK_ID"
           exit 1
 
-      - name: Validate agent log
+      - name: Validate agent log exists
+        if: steps.actor.outputs.is_agent == 'true'
         shell: bash
         env:
           TASK_ID: ${{ steps.task.outputs.task_id }}
@@ -98,6 +111,7 @@ jobs:
           fi
 
       - name: Validate required log sections
+        if: steps.actor.outputs.is_agent == 'true'
         shell: bash
         env:
           TASK_ID: ${{ steps.task.outputs.task_id }}
@@ -123,4 +137,11 @@ jobs:
             fi
           done
 
-          echo "Task workflow validation passed."
+          echo "Agent workflow validation passed."
+
+      - name: Human branch validation
+        if: steps.actor.outputs.is_agent == 'false'
+        shell: bash
+        run: |
+          echo "Non-agent branch detected."
+          echo "Agent-specific validation skipped."
