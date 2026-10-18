@@ -6,6 +6,32 @@ Codex must read and follow `AGENTS.md` before starting any task.
 
 ---
 
+## Mandatory repository synchronization
+
+Before reading repository instructions or starting task work:
+
+1. Change directory to:
+
+   `/workspace/cloudagents`
+
+2. Synchronize the repository with the latest `main`:
+
+   `git fetch origin`
+
+   `git checkout -B main origin/main`
+
+3. Verify the repository state:
+
+   `git status`
+
+   `git log -1 --oneline`
+
+Only after synchronization:
+
+1. read `AGENTS.md`,
+2. read the remaining Codex workflow instructions,
+3. create the task branch from the updated `main`.
+
 ## Before starting
 
 1. Read `AGENTS.md`.
@@ -59,6 +85,21 @@ If a section has nothing to report, use:
 `None`
 
 Do not omit required sections.
+
+---
+
+## GitHub publishing
+
+When the task is ready to publish:
+
+1. Commit all task-related changes.
+2. Push the task branch.
+3. Create a pull request to `main`.
+4. Do not merge the pull request manually.
+
+If GitHub publishing requires explicit user approval, request the approval and continue after it is granted.
+
+Waiting for user approval is not a task failure or blocker.
 
 ---
 

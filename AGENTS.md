@@ -30,6 +30,37 @@ This repository is used to coordinate and compare work performed by multiple AI 
 
 ---
 
+## Repository root
+
+All repository work must be created inside:
+
+`/workspace/cloudagents`
+
+Do not create task deliverables directly in `/workspace`, `/workspace/scratch`,
+or other directories outside the repository unless explicitly instructed.
+
+Standalone experiments or mini-projects should be created inside this repository
+in an appropriate subdirectory.
+
+---
+
+## Repository language
+
+Repository content must be written in English unless the task explicitly
+requires another language.
+
+This includes:
+
+- task logs,
+- documentation,
+- structured data descriptions,
+- pull request titles and descriptions,
+- repository comments and notes.
+
+The language of the user prompt does not change this rule.
+
+---
+
 ## Agent branch prefixes
 
 Use the appropriate branch prefix:
