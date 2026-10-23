@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task JSON Schema</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <p class="kicker">json-cursor-template</p>
+        <h1>Task JSON Schema</h1>
+        <p class="intro">A simple format for describing one task: its identifier, name, short description, status, completed steps, and the tools that were used.</p>
+      </header>
+
+      <section class="window" aria-labelledby="schema-heading">
+        <div class="window-bar">
+          <h2 id="schema-heading">Schema</h2>
+          <p class="window-meta"><code>task-schema.json</code> · JSON Schema 2020-12</p>
+        </div>
+        <pre class="window-body"><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-schema.json",
+  "title": "Task details",
+  "description": "A simple JSON format for a single task: identity, short description, status, completed steps, and tools used.",
+  "type": "object",
+  "required": [
+    "task_id",
+    "name",
+    "description",
+    "status",
+    "steps_completed",
+    "tools_used"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Unique task identifier in the format CA-&lt;number&gt;.",
+      "pattern": "^CA-[0-9]+$",
+      "examples": ["CA-005"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Short, human-readable task name.",
+      "minLength": 1,
+      "examples": ["JSON task schema presentation"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief summary of the task goal or scope.",
+      "minLength": 1,
+      "examples": ["Define a JSON schema for task details and present it on a static HTML page."]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current task status.",
+      "enum": ["todo", "in_progress", "completed", "partial", "blocked"]
+    },
+    "steps_completed": {
+      "type": "array",
+      "description": "Ordered list of steps already performed.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "examples": [
+        [
+          "Created task-schema.json",
+          "Added the HTML presentation page"
+        ]
+      ]
+    },
+    "tools_used": {
+      "type": "array",
+      "description": "Tools used while working on the task.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "examples": [["git", "HTML", "CSS"]]
+    }
+  },
+  "additionalProperties": false
+}</code></pre>
+      </section>
+
+      <section class="fields" aria-labelledby="fields-heading">
+        <h2 id="fields-heading">Field descriptions</h2>
+        <dl>
+          <div>
+            <dt><code>task_id</code></dt>
+            <dd>Unique task identifier in the format <code>CA-&lt;number&gt;</code>, for example <code>CA-005</code>.</dd>
+          </div>
+          <div>
+            <dt><code>name</code></dt>
+            <dd>Short, human-readable task name. Must not be empty.</dd>
+          </div>
+          <div>
+            <dt><code>description</code></dt>
+            <dd>Brief summary of the task goal or scope.</dd>
+          </div>
+          <div>
+            <dt><code>status</code></dt>
+            <dd>Current status. One of <code>todo</code>, <code>in_progress</code>, <code>completed</code>, <code>partial</code>, or <code>blocked</code>.</dd>
+          </div>
+          <div>
+            <dt><code>steps_completed</code></dt>
+            <dd>Ordered list of steps already performed. Each item is a non-empty string.</dd>
+          </div>
+          <div>
+            <dt><code>tools_used</code></dt>
+            <dd>Tools used while working on the task. Each tool is listed once.</dd>
+          </div>
+        </dl>
+        <p class="note">All six fields are required. Extra properties are rejected.</p>
+      </section>
+    </main>
+  </body>
+</html>

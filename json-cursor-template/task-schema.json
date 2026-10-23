@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-schema.json",
+  "title": "Task details",
+  "description": "A simple JSON format for a single task: identity, short description, status, completed steps, and tools used.",
+  "type": "object",
+  "required": [
+    "task_id",
+    "name",
+    "description",
+    "status",
+    "steps_completed",
+    "tools_used"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Unique task identifier in the format CA-<number>.",
+      "pattern": "^CA-[0-9]+$",
+      "examples": ["CA-005"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Short, human-readable task name.",
+      "minLength": 1,
+      "examples": ["JSON task schema presentation"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief summary of the task goal or scope.",
+      "minLength": 1,
+      "examples": ["Define a JSON schema for task details and present it on a static HTML page."]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current task status.",
+      "enum": ["todo", "in_progress", "completed", "partial", "blocked"]
+    },
+    "steps_completed": {
+      "type": "array",
+      "description": "Ordered list of steps already performed.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "examples": [
+        [
+          "Created task-schema.json",
+          "Added the HTML presentation page"
+        ]
+      ]
+    },
+    "tools_used": {
+      "type": "array",
+      "description": "Tools used while working on the task.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "examples": [["git", "HTML", "CSS"]]
+    }
+  },
+  "additionalProperties": false
+}
