@@ -1,20 +1,15 @@
 # Claude Instructions
 
-Before starting any task, read and follow all repository-wide instructions in:
+Before starting any task:
 
-`AGENTS.md`
+1. Read and follow all repository-wide instructions in `AGENTS.md`.
+2. Read and follow the Claude-specific workflow in `.claude/WORKFLOW.md`.
 
-`AGENTS.md` is the source of truth for:
-- task workflow,
-- branch naming,
-- task IDs,
-- commits,
-- pull requests,
-- task logs,
-- validation,
-- completion criteria.
+`AGENTS.md` is the repository-wide source of truth.
 
-Claude-specific rules:
-- Do not duplicate repository-wide rules in this file.
-- If this file conflicts with `AGENTS.md`, follow `AGENTS.md` unless the instruction is explicitly Claude-specific.
-- Use the `claude/` branch prefix for agent task branches.
+`.claude/WORKFLOW.md` defines the mandatory execution workflow for Claude.
+
+Use the `claude/` branch prefix for Claude task branches.
+
+If Claude-specific instructions conflict with repository-wide rules,
+follow `AGENTS.md` unless the instruction is explicitly tool-specific.

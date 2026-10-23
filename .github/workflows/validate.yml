@@ -28,72 +28,70 @@ jobs:
 
           echo "Branch: $BRANCH"
 
-          if [[ "$BRANCH" =~ ^(codex|claude|cursor)/ ]]; then
+          if [[ "$BRANCH" =~ ^codex/ ]]; then
             echo "is_agent=true" >> "$GITHUB_OUTPUT"
-            echo "Agent branch detected."
+            echo "agent=codex" >> "$GITHUB_OUTPUT"
+            echo "Codex branch detected."
+
+          elif [[ "$BRANCH" =~ ^claude/ ]]; then
+            echo "is_agent=true" >> "$GITHUB_OUTPUT"
+            echo "agent=claude" >> "$GITHUB_OUTPUT"
+            echo "Claude branch detected."
+
+          elif [[ "$BRANCH" =~ ^cursor/ ]]; then
+            echo "is_agent=true" >> "$GITHUB_OUTPUT"
+            echo "agent=cursor" >> "$GITHUB_OUTPUT"
+            echo "Cursor branch detected."
+
           else
             echo "is_agent=false" >> "$GITHUB_OUTPUT"
+            echo "agent=human" >> "$GITHUB_OUTPUT"
             echo "Human/non-agent branch detected."
           fi
 
-      - name: Validate agent branch name
+      - name: Validate agent branch prefix
         if: steps.actor.outputs.is_agent == 'true'
         shell: bash
         run: |
           BRANCH="${{ github.head_ref }}"
 
-          if [[ ! "$BRANCH" =~ ^(codex|claude|cursor)/CA-[0-9]+-[a-z0-9-]+$ ]]; then
-            echo "Invalid agent branch name."
+          if [[ ! "$BRANCH" =~ ^(codex|claude|cursor)/.+$ ]]; then
+            echo "Invalid agent branch."
             echo
-            echo "Expected format:"
-            echo "  <agent>/CA-<number>-<slug>"
-            echo
-            echo "Examples:"
-            echo "  codex/CA-001-api-client"
-            echo "  claude/CA-002-auth-research"
-            echo "  cursor/CA-003-dashboard-ui"
+            echo "Expected one of:"
+            echo "  codex/..."
+            echo "  claude/..."
+            echo "  cursor/..."
             exit 1
           fi
 
-      - name: Extract task ID
+          echo "Valid agent branch prefix."
+
+      - name: Extract task ID from PR
         if: steps.actor.outputs.is_agent == 'true'
         id: task
         shell: bash
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          BRANCH="${{ github.head_ref }}"
+          CONTENT="$PR_TITLE
+          $PR_BODY"
 
-          TASK_ID=$(echo "$BRANCH" | grep -oE 'CA-[0-9]+')
+          TASK_ID=$(echo "$CONTENT" | grep -oE 'CA-[0-9]+' | head -1)
 
           if [[ -z "$TASK_ID" ]]; then
-            echo "Could not extract Task ID from branch."
+            echo "Could not find Task ID in pull request."
+            echo
+            echo "Expected Task ID format:"
+            echo "  CA-001"
+            echo
+            echo "Add the Task ID to the PR title or body."
             exit 1
           fi
 
           echo "Task ID: $TASK_ID"
           echo "task_id=$TASK_ID" >> "$GITHUB_OUTPUT"
-
-      - name: Validate PR Task ID
-        if: steps.actor.outputs.is_agent == 'true'
-        shell: bash
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
-          TASK_ID: ${{ steps.task.outputs.task_id }}
-        run: |
-          echo "Expected Task ID: $TASK_ID"
-
-          if grep -q "$TASK_ID" <<< "$PR_TITLE"; then
-            echo "Task ID found in PR title."
-            exit 0
-          fi
-
-          if grep -q "$TASK_ID" <<< "$PR_BODY"; then
-            echo "Task ID found in PR body."
-            exit 0
-          fi
-
-          echo "Pull request does not contain Task ID: $TASK_ID"
-          exit 1
 
       - name: Validate agent log exists
         if: steps.actor.outputs.is_agent == 'true'

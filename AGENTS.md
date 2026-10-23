@@ -32,22 +32,23 @@ This repository is used to coordinate and compare work performed by multiple AI 
 
 ## Repository root
 
-All repository work must be created inside:
+All repository work must be created inside the repository directory.
+
+For Codex Cloud, the repository root is:
 
 `/workspace/cloudagents`
 
-Do not create task deliverables directly in `/workspace`, `/workspace/scratch`,
-or other directories outside the repository unless explicitly instructed.
+Do not create task deliverables directly in `/workspace`, `/workspace/scratch`, or other directories outside the repository unless explicitly instructed.
 
-Standalone experiments or mini-projects should be created inside this repository
-in an appropriate subdirectory.
+Standalone experiments or mini-projects should be created inside this repository in an appropriate subdirectory.
+
+Other agent environments may use a different absolute path. In that case, use the repository root returned by Git.
 
 ---
 
 ## Repository language
 
-Repository content must be written in English unless the task explicitly
-requires another language.
+Repository content must be written in English unless the task explicitly requires another language.
 
 This includes:
 
@@ -63,19 +64,42 @@ The language of the user prompt does not change this rule.
 
 ## Agent branch prefixes
 
-Use the appropriate branch prefix:
+Agent branches must use the appropriate prefix:
 
 - Codex: `codex/`
 - Claude: `claude/`
 - Cursor: `cursor/`
 
-Recommended format:
+When the environment allows custom branch naming, the preferred format is:
 
 `<agent>/CA-<number>-<slug>`
 
 Example:
 
 `codex/CA-001-api-client`
+
+However, some agent environments may generate branch names automatically.
+
+Automatically generated branch names are allowed as long as the correct agent prefix is preserved.
+
+Examples:
+
+`claude/intelligent-clarke-iuicds`
+
+`codex/CA-001-api-client`
+
+The branch name identifies the agent, not the task.
+
+The task itself is identified by its unique task ID:
+
+`CA-<number>`
+
+The task ID must be present in:
+
+- the pull request title or body,
+- the corresponding task log.
+
+Do not work directly on `main`.
 
 ---
 
@@ -97,7 +121,11 @@ Creating or modifying files only in the local or cloud workspace is NOT task com
 
 Do not report the task as completed until the pull request exists.
 
-If commit, push, pull request creation, repository access, or required validation fails:
+If publishing to GitHub requires explicit user approval, request that approval and continue the workflow after it is granted.
+
+Waiting for publishing approval is not a task failure.
+
+If commit, push, pull request creation, repository access, or required validation fails for another reason:
 
 - do not claim successful completion,
 - set the task status to `partial` or `blocked`,
@@ -139,6 +167,8 @@ The PR must contain the task ID in either:
 - the title,
 - or the PR body.
 
+The pull request should reference the corresponding task log.
+
 Do not merge directly into `main`.
 
 ---
@@ -170,8 +200,8 @@ Clearly document performed and skipped validation in the task log.
 Agents must also follow their tool-specific instructions when present:
 
 - Codex: `.codex/WORKFLOW.md`
-- Claude: `CLAUDE.md` and `.claude/`
-- Cursor: `.cursor/`
+- Claude: `CLAUDE.md` and `.claude/WORKFLOW.md`
+- Cursor: `.cursor/WORKFLOW.md`
 
 Tool-specific instructions may add execution details, but they must not contradict the repository-wide rules in this file.
 
