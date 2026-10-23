@@ -117,6 +117,8 @@ h2 {
   color: var(--window-ink);
   font-size: 0.82rem;
   line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .fields h2 {
