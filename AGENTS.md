@@ -32,17 +32,19 @@ This repository is used to coordinate and compare work performed by multiple AI 
 
 ## Repository root
 
-All repository work must be created inside the repository directory.
+All repository work must be created inside the repository.
 
 For Codex Cloud, the repository root is:
 
 `/workspace/cloudagents`
 
+Other agent environments may use a different absolute path.
+
+When necessary, determine the repository root using:
+
+`git rev-parse --show-toplevel`
+
 Do not create task deliverables directly in `/workspace`, `/workspace/scratch`, or other directories outside the repository unless explicitly instructed.
-
-Standalone experiments or mini-projects should be created inside this repository in an appropriate subdirectory.
-
-Other agent environments may use a different absolute path. In that case, use the repository root returned by Git.
 
 ---
 
@@ -59,6 +61,38 @@ This includes:
 - repository comments and notes.
 
 The language of the user prompt does not change this rule.
+
+---
+
+## Project output structure
+
+Standalone task deliverables must be stored inside:
+
+`projects/`
+
+When a task creates a new standalone project, prototype, experiment, page, tool, schema, or similar deliverable, create a dedicated directory using:
+
+`projects/<TASK-ID>-<slug>/`
+
+Example:
+
+`projects/CA-004-json-task-viewer/`
+
+The agent should choose a short, descriptive slug automatically.
+
+The user does not need to provide the output directory explicitly.
+
+If the task modifies an existing project or artifact, update the existing project directory instead of creating a new directory for the task.
+
+Do not place standalone task deliverables:
+
+- directly in the repository root,
+- directly in `/workspace`,
+- outside the Git repository,
+
+unless explicitly instructed.
+
+Repository-level files such as documentation, workflows, agent instructions, shared configuration, and task logs may remain in their appropriate root-level locations.
 
 ---
 
@@ -138,7 +172,15 @@ If commit, push, pull request creation, repository access, or required validatio
 
 Use:
 
-`agent-logs/TEMPLATE.md`
+`agent-logs/templates/TASK_LOG_TEMPLATE.md`
+
+Every task log must be stored directly inside:
+
+`agent-logs/`
+
+Example:
+
+`agent-logs/CA-004.md`
 
 Task logs should explain:
 

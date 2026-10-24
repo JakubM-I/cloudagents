@@ -29,7 +29,7 @@ Do not assume that the initial workspace contains the latest repository state.
 
 ## Repository root
 
-All task deliverables must be created inside the Git repository.
+All task work must remain inside the Git repository.
 
 Determine the repository root when necessary using:
 
@@ -37,7 +37,25 @@ Determine the repository root when necessary using:
 
 Do not create task deliverables outside the repository unless explicitly instructed.
 
-If the task creates a standalone experiment or mini-project, create an appropriate subdirectory inside the repository.
+---
+
+## Project output
+
+When the task creates a new standalone project, prototype, experiment, page, tool, schema, or similar deliverable, create:
+
+`projects/<TASK-ID>-<slug>/`
+
+Choose a short descriptive slug automatically.
+
+Example:
+
+`projects/CA-012-dashboard-ui/`
+
+The user does not need to specify the directory.
+
+If the task modifies an existing project or artifact, work in the existing project directory instead of creating a new task directory.
+
+Repository-level work such as changes to documentation, workflows, configuration, agent instructions, or task logs should remain in the appropriate repository-level location.
 
 ---
 
@@ -74,6 +92,7 @@ Do not work directly on `main`.
 
 - Work only within the assigned task scope.
 - Keep all task deliverables inside the repository.
+- Follow the project output rules defined in `AGENTS.md`.
 - Follow the repository language rules defined in `AGENTS.md`.
 - Keep unrelated changes out of the branch.
 - Follow existing repository conventions.
@@ -94,7 +113,7 @@ Before completion, create:
 
 Use:
 
-`agent-logs/TEMPLATE.md`
+`agent-logs/templates/TASK_LOG_TEMPLATE.md`
 
 Complete all required sections.
 
