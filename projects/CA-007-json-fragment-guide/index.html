@@ -188,12 +188,14 @@
       }
 
       function pickCurrent() {
-        const mark = window.innerHeight * 0.32;
+        const paneRect = pane.getBoundingClientRect();
+        const sideBySide = paneRect.width < window.innerWidth - 40;
+        const mark = sideBySide ? window.innerHeight * 0.32 : paneRect.bottom + 28;
         let best = cards[0];
         let bestDist = Infinity;
         cards.forEach((card) => {
           const rect = card.getBoundingClientRect();
-          if (rect.bottom < 80 || rect.top > window.innerHeight) return;
+          if (rect.bottom < mark - 8 || rect.top > window.innerHeight) return;
           const dist = Math.abs(rect.top - mark);
           if (dist < bestDist) {
             bestDist = dist;
