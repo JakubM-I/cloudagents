@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Unique task identifier in the format CA-<number>.",
+      "pattern": "^CA-[0-9]+$",
+      "examples": [
+        "CA-004"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "description": "Short, human-readable task name.",
+      "minLength": 1,
+      "examples": [
+        "Create a JSON task template"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief summary of the task goal or scope.",
+      "examples": [
+        "Define a JSON schema for task details and present it on a static HTML page."
+      ]
+    }
+  }
+}
