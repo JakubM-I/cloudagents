@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Proste objaśnienie przykładowego schematu JSON.">
+    <title>Przewodnik po schemacie JSON</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="intro">
+        <p class="eyebrow">JSON • szybkie wyjaśnienie</p>
+        <h1>Przewodnik po schemacie zadania</h1>
+        <p>Po lewej znajduje się pełny przykład. Po prawej — wyjaśnienie każdej części schematu.</p>
+      </header>
+
+      <section class="guide" aria-label="Kod JSON i jego objaśnienie">
+        <article class="code-panel">
+          <div class="panel-title">
+            <span class="file-dot" aria-hidden="true"></span>
+            <h2>task-schema.json</h2>
+            <span class="badge">JSON</span>
+          </div>
+          <pre aria-label="Przykładowy kod JSON"><code><span class="line"><i>1</i>{</span><span class="line"><i>2</i>  <b>"properties"</b>: {</span><span class="line"><i>3</i>    <b>"task_id"</b>: {</span><span class="line"><i>4</i>      <b>"type"</b>: <em>"string"</em>,</span><span class="line"><i>5</i>      <b>"description"</b>: <em>"Unique task identifier in the format CA-&lt;number&gt;."</em>,</span><span class="line"><i>6</i>      <b>"pattern"</b>: <em>"^CA-[0-9]+$"</em>,</span><span class="line"><i>7</i>      <b>"examples"</b>: [<em>"CA-004"</em>]</span><span class="line"><i>8</i>    },</span><span class="line"><i>9</i>    <b>"name"</b>: {</span><span class="line"><i>10</i>      <b>"type"</b>: <em>"string"</em>,</span><span class="line"><i>11</i>      <b>"description"</b>: <em>"Short, human-readable task name."</em>,</span><span class="line"><i>12</i>      <b>"minLength"</b>: <strong>1</strong>,</span><span class="line"><i>13</i>      <b>"examples"</b>: [</span><span class="line"><i>14</i>        <em>"Create a JSON task template"</em></span><span class="line"><i>15</i>      ]</span><span class="line"><i>16</i>    },</span><span class="line"><i>17</i>    <b>"description"</b>: {</span><span class="line"><i>18</i>      <b>"type"</b>: <em>"string"</em>,</span><span class="line"><i>19</i>      <b>"description"</b>: <em>"Brief summary of the task goal or scope."</em>,</span><span class="line"><i>20</i>      <b>"examples"</b>: [</span><span class="line"><i>21</i>        <em>"Define a JSON schema for task details and present it on a static HTML page."</em></span><span class="line"><i>22</i>      ]</span><span class="line"><i>23</i>    }</span><span class="line"><i>24</i>  }</span><span class="line"><i>25</i>}</span></code></pre>
+        </article>
+
+        <aside class="explanations" aria-labelledby="explanations-title">
+          <div class="section-heading">
+            <p class="eyebrow">Jak czytać ten plik</p>
+            <h2 id="explanations-title">Element po elemencie</h2>
+          </div>
+
+          <article class="explanation-card">
+            <span class="line-reference">linia 2</span>
+            <h3><code>properties</code></h3>
+            <p>Obiekt grupujący pola, które może zawierać opisywane zadanie.</p>
+          </article>
+
+          <article class="explanation-card accent-blue">
+            <span class="line-reference">linie 3–8</span>
+            <h3><code>task_id</code></h3>
+            <p>Jednoznaczny identyfikator zadania. Wzorzec <code>^CA-[0-9]+$</code> dopuszcza wartości takie jak <code>CA-004</code>.</p>
+          </article>
+
+          <article class="explanation-card accent-purple">
+            <span class="line-reference">linie 9–16</span>
+            <h3><code>name</code></h3>
+            <p>Krótka nazwa widoczna dla człowieka. <code>minLength: 1</code> oznacza, że nie może być pusta.</p>
+          </article>
+
+          <article class="explanation-card accent-gold">
+            <span class="line-reference">linie 17–23</span>
+            <h3><code>description</code></h3>
+            <p>Zwięzłe wyjaśnienie celu lub zakresu zadania. Przykład pokazuje, jak może wyglądać prawidłowa treść.</p>
+          </article>
+
+          <p class="tip"><span aria-hidden="true">✦</span> <strong>Wskazówka:</strong> <code>type</code> określa rodzaj danych, a <code>examples</code> pokazuje przykładową poprawną wartość.</p>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
