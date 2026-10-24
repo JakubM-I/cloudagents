@@ -149,17 +149,18 @@ Before reporting the task as completed, the agent MUST:
 4. push the task branch,
 5. open a pull request to `main`,
 6. ensure the task ID appears in the PR title or body,
-7. verify that the pull request was created successfully.
+7. verify that the pull request was created successfully,
+8. enable auto-merge for the pull request using the repository's configured squash merge strategy.
 
 Creating or modifying files only in the local or cloud workspace is NOT task completion.
 
-Do not report the task as completed until the pull request exists.
+Do not report the task as completed until the pull request exists and auto-merge has been enabled, unless auto-merge cannot be enabled for a documented reason.
 
 If publishing to GitHub requires explicit user approval, request that approval and continue the workflow after it is granted.
 
 Waiting for publishing approval is not a task failure.
 
-If commit, push, pull request creation, repository access, or required validation fails for another reason:
+If commit, push, pull request creation, repository access, validation, or auto-merge setup fails for another reason:
 
 - do not claim successful completion,
 - set the task status to `partial` or `blocked`,
@@ -211,7 +212,17 @@ The PR must contain the task ID in either:
 
 The pull request should reference the corresponding task log.
 
-Do not merge directly into `main`.
+Agents must not manually merge pull requests.
+
+After creating the pull request, enable GitHub auto-merge using squash merge.
+
+The repository validation and branch protection rules determine whether the pull request is allowed to merge.
+
+Use:
+
+`gh pr merge --auto --squash`
+
+If auto-merge cannot be enabled, clearly report the reason.
 
 ---
 
