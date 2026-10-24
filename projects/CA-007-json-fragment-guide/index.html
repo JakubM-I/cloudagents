@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task schema fragment, piece by piece</title>
+    <meta name="description" content="The full task schema sample on the left, and each fragment explained on the right.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app">
+      <section class="code-pane" aria-labelledby="sample-heading">
+        <div class="pane-bar">
+          <h2 id="sample-heading">schema-fragment.json</h2>
+          <p>Full sample</p>
+        </div>
+        <ol class="code">
+          <li data-line="1">{</li>
+          <li data-line="2">  <span class="k">"properties"</span>: {</li>
+          <li data-line="3">    <span class="k">"task_id"</span>: {</li>
+          <li data-line="4">      <span class="k">"type"</span>: <span class="s">"string"</span>,</li>
+          <li data-line="5">      <span class="k">"description"</span>: <span class="s">"Unique task identifier in the format CA-&lt;number&gt;."</span>,</li>
+          <li data-line="6">      <span class="k">"pattern"</span>: <span class="s">"^CA-[0-9]+$"</span>,</li>
+          <li data-line="7">      <span class="k">"examples"</span>: [</li>
+          <li data-line="8">        <span class="s">"CA-004"</span></li>
+          <li data-line="9">      ]</li>
+          <li data-line="10">    },</li>
+          <li data-line="11">    <span class="k">"name"</span>: {</li>
+          <li data-line="12">      <span class="k">"type"</span>: <span class="s">"string"</span>,</li>
+          <li data-line="13">      <span class="k">"description"</span>: <span class="s">"Short, human-readable task name."</span>,</li>
+          <li data-line="14">      <span class="k">"minLength"</span>: <span class="n">1</span>,</li>
+          <li data-line="15">      <span class="k">"examples"</span>: [</li>
+          <li data-line="16">        <span class="s">"Create a JSON task template"</span></li>
+          <li data-line="17">      ]</li>
+          <li data-line="18">    },</li>
+          <li data-line="19">    <span class="k">"description"</span>: {</li>
+          <li data-line="20">      <span class="k">"type"</span>: <span class="s">"string"</span>,</li>
+          <li data-line="21">      <span class="k">"description"</span>: <span class="s">"Brief summary of the task goal or scope."</span>,</li>
+          <li data-line="22">      <span class="k">"examples"</span>: [</li>
+          <li data-line="23">        <span class="s">"Define a JSON schema for task details and present it on a static HTML page."</span></li>
+          <li data-line="24">      ]</li>
+          <li data-line="25">    }</li>
+          <li data-line="26">  }</li>
+          <li data-line="27">}</li>
+        </ol>
+      </section>
+
+      <main class="notes">
+        <header class="intro">
+          <p class="kicker">Schema fragment</p>
+          <h1>The task fields, one piece at a time</h1>
+          <p>The complete example stays on the left. The cards follow that example from top to bottom. The lines that belong to the card you are reading are marked in the sample.</p>
+        </header>
+
+        <article class="fragment" id="field-properties" tabindex="0" data-lines="1-2,26-27">
+          <p class="step">01</p>
+          <h2><code>properties</code></h2>
+          <p>The document is a single JSON object. Its only member is the JSON Schema keyword <code>properties</code>, which maps each field name to the rules for that field. This fragment names three fields: <code>task_id</code>, <code>name</code>, and <code>description</code>.</p>
+<pre class="excerpt"><code>{
+  <span class="k">"properties"</span>: {
+    <span class="k">"task_id"</span>: { … },
+    <span class="k">"name"</span>: { … },
+    <span class="k">"description"</span>: { … }
+  }
+}</code></pre>
+          <dl class="terms">
+            <dt><code>properties</code></dt>
+            <dd>An object. Each key is a field name, and each value is a schema for that field. This fragment does not set <code>"type": "object"</code> and does not list <code>required</code> fields. A full schema usually adds both next to <code>properties</code>.</dd>
+          </dl>
+        </article>
+
+        <article class="fragment" id="field-task-id" tabindex="0" data-lines="3-10">
+          <p class="step">02</p>
+          <h2><code>task_id</code></h2>
+          <p>The identifier of one task. It is the value that ties a task to its branch, task log, and pull request.</p>
+<pre class="excerpt"><code><span class="k">"task_id"</span>: {
+  <span class="k">"type"</span>: <span class="s">"string"</span>,
+  <span class="k">"description"</span>: <span class="s">"Unique task identifier in the format CA-&lt;number&gt;."</span>,
+  <span class="k">"pattern"</span>: <span class="s">"^CA-[0-9]+$"</span>,
+  <span class="k">"examples"</span>: [
+    <span class="s">"CA-004"</span>
+  ]
+}</code></pre>
+          <dl class="terms">
+            <dt><code>type</code></dt>
+            <dd>Assertion. The value must be a JSON string.</dd>
+            <dt><code>description</code></dt>
+            <dd>Annotation. Sentence for a person reading the schema. Validators do not check it.</dd>
+            <dt><code>pattern</code></dt>
+            <dd>Assertion. The whole string must match <code>^CA-[0-9]+$</code>: <code>CA-</code>, then one or more digits, and nothing else. <code>CA-004</code> matches. <code>ca-004</code>, <code>CA-</code>, and <code>CA-004-extra</code> do not.</dd>
+            <dt><code>examples</code></dt>
+            <dd>Annotation. <code>CA-004</code> is a sample for documentation. The keyword does not accept or reject data.</dd>
+          </dl>
+        </article>
+
+        <article class="fragment" id="field-name" tabindex="0" data-lines="11-18">
+          <p class="step">03</p>
+          <h2><code>name</code></h2>
+          <p>A short title a person can scan in a list of tasks.</p>
+<pre class="excerpt"><code><span class="k">"name"</span>: {
+  <span class="k">"type"</span>: <span class="s">"string"</span>,
+  <span class="k">"description"</span>: <span class="s">"Short, human-readable task name."</span>,
+  <span class="k">"minLength"</span>: <span class="n">1</span>,
+  <span class="k">"examples"</span>: [
+    <span class="s">"Create a JSON task template"</span>
+  ]
+}</code></pre>
+          <dl class="terms">
+            <dt><code>type</code></dt>
+            <dd>Assertion. The value must be a string.</dd>
+            <dt><code>description</code></dt>
+            <dd>Annotation. Explains that the field is a human-readable name.</dd>
+            <dt><code>minLength</code></dt>
+            <dd>Assertion. At least one character, so <code>""</code> fails. A single space passes: the keyword counts characters and does not trim whitespace.</dd>
+            <dt><code>examples</code></dt>
+            <dd>Annotation. One sample title, written as a short imperative phrase.</dd>
+          </dl>
+        </article>
+
+        <article class="fragment" id="field-description" tabindex="0" data-lines="19-25">
+          <p class="step">04</p>
+          <h2><code>description</code></h2>
+          <p>A brief summary of what the task should accomplish.</p>
+<pre class="excerpt"><code><span class="k">"description"</span>: {
+  <span class="k">"type"</span>: <span class="s">"string"</span>,
+  <span class="k">"description"</span>: <span class="s">"Brief summary of the task goal or scope."</span>,
+  <span class="k">"examples"</span>: [
+    <span class="s">"Define a JSON schema for task details and present it on a static HTML page."</span>
+  ]
+}</code></pre>
+          <dl class="terms">
+            <dt><code>type</code></dt>
+            <dd>Assertion. The value must be a string.</dd>
+            <dt><code>description</code></dt>
+            <dd>The outer key is the field name. The inner key is the JSON Schema keyword that documents the field. They are two different members.</dd>
+            <dt><code>examples</code></dt>
+            <dd>Annotation. A sample summary. This field has no <code>minLength</code>, so an empty string still satisfies the rules shown here.</dd>
+          </dl>
+        </article>
+
+        <footer>
+          <p>The sample on the left is the text of <code>schema-fragment.json</code>.</p>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      const lines = [...document.querySelectorAll(".code li")];
+      const cards = [...document.querySelectorAll(".fragment")];
+      const pane = document.querySelector(".code-pane");
+      let pinned = null;
+      let current = cards[0];
+      let shown = null;
+
+      function ranges(spec) {
+        return spec.split(",").map((part) => {
+          const [start, end] = part.split("-").map(Number);
+          return [start, end ?? start];
+        });
+      }
+
+      function apply() {
+        const card = pinned || current;
+        if (!card || card === shown) return;
+        shown = card;
+        const active = ranges(card.dataset.lines);
+        lines.forEach((line) => {
+          const n = Number(line.dataset.line);
+          line.classList.toggle("is-on", active.some(([a, b]) => n >= a && n <= b));
+        });
+        cards.forEach((item) => {
+          const on = item === card;
+          item.classList.toggle("is-current", on);
+          if (on) item.setAttribute("aria-current", "true");
+          else item.removeAttribute("aria-current");
+        });
+        const first = lines.find((line) => line.classList.contains("is-on"));
+        if (!first) return;
+        const bar = pane.querySelector(".pane-bar").offsetHeight;
+        const top = first.offsetTop;
+        const bottom = top + first.offsetHeight;
+        const viewTop = pane.scrollTop + bar;
+        const viewBottom = pane.scrollTop + pane.clientHeight;
+        if (top < viewTop || bottom > viewBottom) {
+          const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+          pane.scrollTo({ top: Math.max(0, top - bar - 8), behavior });
+        }
+      }
+
+      function pickCurrent() {
+        const mark = window.innerHeight * 0.32;
+        let best = cards[0];
+        let bestDist = Infinity;
+        cards.forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          if (rect.bottom < 80 || rect.top > window.innerHeight) return;
+          const dist = Math.abs(rect.top - mark);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = card;
+          }
+        });
+        return best;
+      }
+
+      cards.forEach((card, index) => {
+        const pin = () => {
+          pinned = card;
+          apply();
+        };
+        const unpin = () => {
+          if (document.activeElement === card) return;
+          pinned = null;
+          current = pickCurrent();
+          apply();
+        };
+        card.addEventListener("mouseenter", pin);
+        card.addEventListener("mouseleave", unpin);
+        card.addEventListener("focus", pin);
+        card.addEventListener("blur", () => {
+          pinned = null;
+          current = pickCurrent();
+          apply();
+        });
+        card.addEventListener("keydown", (event) => {
+          if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+          event.preventDefault();
+          const next = cards[index + (event.key === "ArrowDown" ? 1 : -1)];
+          if (next) next.focus();
+        });
+      });
+
+      let frame = 0;
+      window.addEventListener("scroll", () => {
+        if (pinned) return;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          current = pickCurrent();
+          apply();
+        });
+      }, { passive: true });
+
+      apply();
+    </script>
+  </body>
+</html>
