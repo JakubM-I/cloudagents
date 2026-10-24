@@ -149,9 +149,16 @@ When the task is ready to publish:
 2. push the task branch,
 3. create a pull request to `main`,
 4. ensure the task ID is present in the PR title or body,
-5. verify that the pull request exists.
+5. verify that the pull request exists,
+6. enable auto-merge for the pull request using squash merge.
+
+Use:
+
+`gh pr merge --auto --squash`
 
 Do not manually merge the pull request.
+
+Repository validation and branch protection rules must determine whether the pull request is allowed to merge.
 
 If GitHub publishing requires explicit user approval:
 
@@ -160,6 +167,8 @@ If GitHub publishing requires explicit user approval:
 3. do not stop and ask for additional instructions unless another blocker occurs.
 
 Waiting for publishing approval is not a task failure or blocker.
+
+If auto-merge cannot be enabled, document and report the reason clearly.
 
 ---
 
@@ -200,7 +209,8 @@ After pushing:
 1. open a pull request to `main`,
 2. include the task ID in the PR title or body,
 3. reference the task log,
-4. verify that the pull request was created successfully.
+4. verify that the pull request was created successfully,
+5. enable auto-merge using squash merge.
 
 Recommended PR title:
 
@@ -213,6 +223,12 @@ The pull request body should include:
 - validation performed,
 - task log path.
 
+Use:
+
+`gh pr merge --auto --squash`
+
+Do not manually merge the pull request.
+
 ---
 
 ## Completion requirements
@@ -224,7 +240,10 @@ Codex MUST NOT report a task as completed until all of the following are true:
 - required validation was performed,
 - changes were committed,
 - the task branch was pushed,
-- a pull request to `main` exists.
+- a pull request to `main` exists,
+- auto-merge has been enabled for the pull request.
+
+If auto-merge cannot be enabled for a documented external reason, report that clearly instead of claiming full completion.
 
 Creating or modifying files only in the cloud workspace is NOT task completion.
 
@@ -261,13 +280,14 @@ Do not overwrite unrelated work.
 
 ## Final response
 
-After successfully creating the pull request, report:
+After successfully creating the pull request and enabling auto-merge, report:
 
 - Task ID
 - Branch
 - Commit
 - Pull request
+- Auto-merge status
 - Validation performed
 - Blockers or unfinished work, if any
 
-Do not describe the task as complete before the pull request exists.
+Do not describe the task as complete before the pull request exists and auto-merge has been enabled.

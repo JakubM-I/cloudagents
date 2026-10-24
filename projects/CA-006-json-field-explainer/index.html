@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JSON Field Explainer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <p class="eyebrow">JSON Schema walkthrough</p>
+      <h1>Task schema, piece by piece</h1>
+      <p class="lead">The full sample is on the left (on top on narrow screens). Next to it, each fragment is shown on its own with an explanation. Hover over or focus a fragment to highlight its lines in the full code.</p>
+    </header>
+
+    <main class="layout">
+      <section class="code-panel" aria-labelledby="full-code-heading">
+        <div class="code-bar">
+          <h2 id="full-code-heading"><code>schema-fragment.json</code></h2>
+          <span>Full sample</span>
+        </div>
+<pre class="code"><code><span class="ln" data-part="root">{</span>
+<span class="ln" data-part="root">  <span class="k">"properties"</span>: {</span>
+<span class="ln" data-part="task_id">    <span class="k">"task_id"</span>: {</span>
+<span class="ln" data-part="task_id">      <span class="k">"type"</span>: <span class="s">"string"</span>,</span>
+<span class="ln" data-part="task_id">      <span class="k">"description"</span>: <span class="s">"Unique task identifier in the format CA-&lt;number&gt;."</span>,</span>
+<span class="ln" data-part="task_id">      <span class="k">"pattern"</span>: <span class="s">"^CA-[0-9]+$"</span>,</span>
+<span class="ln" data-part="task_id">      <span class="k">"examples"</span>: [<span class="s">"CA-004"</span>]</span>
+<span class="ln" data-part="task_id">    },</span>
+<span class="ln" data-part="name">    <span class="k">"name"</span>: {</span>
+<span class="ln" data-part="name">      <span class="k">"type"</span>: <span class="s">"string"</span>,</span>
+<span class="ln" data-part="name">      <span class="k">"description"</span>: <span class="s">"Short, human-readable task name."</span>,</span>
+<span class="ln" data-part="name">      <span class="k">"minLength"</span>: <span class="n">1</span>,</span>
+<span class="ln" data-part="name">      <span class="k">"examples"</span>: [<span class="s">"Create a JSON task template"</span>]</span>
+<span class="ln" data-part="name">    },</span>
+<span class="ln" data-part="description">    <span class="k">"description"</span>: {</span>
+<span class="ln" data-part="description">      <span class="k">"type"</span>: <span class="s">"string"</span>,</span>
+<span class="ln" data-part="description">      <span class="k">"description"</span>: <span class="s">"Brief summary of the task goal or scope."</span>,</span>
+<span class="ln" data-part="description">      <span class="k">"examples"</span>: [<span class="s">"Define a JSON schema for task details and present it on a static HTML page."</span>]</span>
+<span class="ln" data-part="description">    }</span>
+<span class="ln" data-part="root">  }</span>
+<span class="ln" data-part="root">}</span></code></pre>
+      </section>
+
+      <section class="fragments" aria-label="Fragments with explanations">
+        <article class="fragment" data-part="root" tabindex="0">
+          <h2>1. Root object and <code>properties</code></h2>
+<pre class="code"><code>{
+  <span class="k">"properties"</span>: {
+    …
+  }
+}</code></pre>
+          <p>The whole document is a single JSON object. The <code>properties</code> keyword lists the fields a task object may contain. Each key inside it is a field name, and its value is a small schema describing that field.</p>
+          <dl>
+            <dt><code>properties</code></dt>
+            <dd>Map of field name → field schema. Here it defines three fields: <code>task_id</code>, <code>name</code> and <code>description</code>.</dd>
+          </dl>
+        </article>
+
+        <article class="fragment" data-part="task_id" tabindex="0">
+          <h2>2. <code>task_id</code></h2>
+<pre class="code"><code><span class="k">"task_id"</span>: {
+  <span class="k">"type"</span>: <span class="s">"string"</span>,
+  <span class="k">"description"</span>: <span class="s">"Unique task identifier in the format CA-&lt;number&gt;."</span>,
+  <span class="k">"pattern"</span>: <span class="s">"^CA-[0-9]+$"</span>,
+  <span class="k">"examples"</span>: [<span class="s">"CA-004"</span>]
+}</code></pre>
+          <p>The unique identifier of a task. It ties a task to its branch, task log and pull request.</p>
+          <dl>
+            <dt><code>type</code></dt>
+            <dd>The value must be a string.</dd>
+            <dt><code>description</code></dt>
+            <dd>Human-readable explanation of the field. It does not affect validation.</dd>
+            <dt><code>pattern</code></dt>
+            <dd>Regular expression the value must match: <code>CA-</code> followed by one or more digits, and nothing else (<code>^</code> and <code>$</code> anchor the start and end).</dd>
+            <dt><code>examples</code></dt>
+            <dd>Sample valid values, for documentation only. <code>CA-004</code> passes; <code>ca-4</code> or <code>CA-</code> would not.</dd>
+          </dl>
+        </article>
+
+        <article class="fragment" data-part="name" tabindex="0">
+          <h2>3. <code>name</code></h2>
+<pre class="code"><code><span class="k">"name"</span>: {
+  <span class="k">"type"</span>: <span class="s">"string"</span>,
+  <span class="k">"description"</span>: <span class="s">"Short, human-readable task name."</span>,
+  <span class="k">"minLength"</span>: <span class="n">1</span>,
+  <span class="k">"examples"</span>: [<span class="s">"Create a JSON task template"</span>]
+}</code></pre>
+          <p>A short title people can read at a glance, for example in a list of tasks.</p>
+          <dl>
+            <dt><code>type</code></dt>
+            <dd>The value must be a string.</dd>
+            <dt><code>minLength</code></dt>
+            <dd>The string must have at least 1 character, so an empty name (<code>""</code>) is rejected.</dd>
+            <dt><code>examples</code></dt>
+            <dd>A sample name showing the expected style: a short imperative phrase.</dd>
+          </dl>
+        </article>
+
+        <article class="fragment" data-part="description" tabindex="0">
+          <h2>4. <code>description</code></h2>
+<pre class="code"><code><span class="k">"description"</span>: {
+  <span class="k">"type"</span>: <span class="s">"string"</span>,
+  <span class="k">"description"</span>: <span class="s">"Brief summary of the task goal or scope."</span>,
+  <span class="k">"examples"</span>: [<span class="s">"Define a JSON schema for task details and present it on a static HTML page."</span>]
+}</code></pre>
+          <p>A one- or two-sentence summary of what the task should achieve.</p>
+          <dl>
+            <dt><code>type</code></dt>
+            <dd>The value must be a string. There is no <code>minLength</code>, so an empty string is technically allowed.</dd>
+            <dt><code>description</code> (keyword)</dt>
+            <dd>Note the two meanings: the outer <code>"description"</code> is the <em>field name</em>, the inner one is the JSON Schema <em>keyword</em> that documents it.</dd>
+          </dl>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      // Highlight the matching lines in the full code when a fragment is hovered or focused.
+      const lines = document.querySelectorAll(".code-panel .ln");
+      const setActive = (part) => {
+        lines.forEach((line) => line.classList.toggle("active", line.dataset.part === part));
+      };
+      document.querySelectorAll(".fragment").forEach((fragment) => {
+        const part = fragment.dataset.part;
+        fragment.addEventListener("mouseenter", () => setActive(part));
+        fragment.addEventListener("focus", () => setActive(part));
+        fragment.addEventListener("mouseleave", () => setActive(null));
+        fragment.addEventListener("blur", () => setActive(null));
+      });
+    </script>
+  </body>
+</html>
