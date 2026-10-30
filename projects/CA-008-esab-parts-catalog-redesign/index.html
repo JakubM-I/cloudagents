@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESABMig C420 / C420w – katalog części (redesign)</title>
+<style>
+  :root{
+    --brand:#f15a24;
+    --brand-dark:#c9461a;
+    --brand-soft:#fff3ed;
+    --text:#1d1f21;
+    --muted:#62666b;
+    --faint:#8a8f94;
+    --line:#e3e3e0;
+    --line-strong:#cfcfcb;
+    --surface:#f6f6f3;
+    --white:#fff;
+    --ok:#1b7a3a;
+    --ok-soft:#e9f6ee;
+    --warn:#8a5a00;
+    --warn-soft:#fdf3dc;
+    --info:#4a5560;
+    --info-soft:#eef0f2;
+    --radius:10px;
+    --shadow:0 6px 24px rgba(20,20,20,.08);
+    --sticky-offset:72px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--white);
+    color:var(--text);
+    font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  a{color:inherit}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .page{max-width:1200px;margin:0 auto;padding:20px 20px 120px}
+
+  /* ---------- header ---------- */
+  .breadcrumbs{font-size:13px;color:var(--faint);margin-bottom:14px}
+  .breadcrumbs a{color:var(--muted);text-decoration:none}
+  .breadcrumbs a:hover{color:var(--brand)}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:18px}
+  h1{font-size:30px;line-height:1.15;margin:0 0 6px;font-weight:650;letter-spacing:-.01em}
+  .lead{margin:0;color:var(--muted);max-width:640px}
+  .steps{display:flex;gap:6px;list-style:none;margin:0;padding:0;font-size:13px;color:var(--muted);flex-shrink:0}
+  .steps li{display:flex;align-items:center;gap:6px;background:var(--surface);border-radius:999px;padding:5px 11px 5px 5px;white-space:nowrap}
+  .steps b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--white);border:1px solid var(--line-strong);font-size:11px;color:var(--text)}
+
+  /* ---------- device bar ---------- */
+  .device{
+    display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+    border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;
+  }
+  .device__icon{width:56px;height:56px;border-radius:8px;background:var(--surface);display:grid;place-items:center}
+  .device__label{font-size:12px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+  .device__name{font-weight:650;font-size:17px}
+  .device__facts{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:13px;color:var(--muted);margin-top:2px}
+  .device__facts strong{color:var(--text);font-weight:600}
+  .variant{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  .variant__label{font-size:12px;color:var(--muted)}
+  .segmented{display:inline-flex;background:var(--surface);border-radius:8px;padding:3px;gap:2px}
+  .segmented button{border:0;background:transparent;padding:6px 11px;border-radius:6px;font-size:13px;font-weight:600;color:var(--muted)}
+  .segmented button[aria-pressed="true"]{background:var(--white);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .device__more{grid-column:1/-1;font-size:13px;border-top:1px solid var(--line);padding-top:10px}
+  .device__more summary{cursor:pointer;color:var(--muted);font-weight:600}
+  .device__more summary:hover{color:var(--brand)}
+  .device__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 18px;margin-top:10px}
+  .device__grid span{display:block;color:var(--faint);font-size:12px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+
+  /* ---------- sticky toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);margin:0 -20px 24px;padding:10px 20px;
+  }
+  .toolbar__row{display:flex;gap:12px;align-items:center}
+  .search{position:relative;flex:1;max-width:420px}
+  .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--faint)}
+  .search input{
+    width:100%;height:40px;border:1px solid var(--line-strong);border-radius:8px;padding:0 34px 0 36px;background:var(--white);
+  }
+  .search input:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--brand-soft)}
+  .search__clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;width:28px;height:28px;border-radius:6px;color:var(--faint)}
+  .search__clear:hover{background:var(--surface)}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);white-space:nowrap;user-select:none}
+  .toggle input{width:16px;height:16px;accent-color:var(--brand)}
+  .tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:10px}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs a{
+    display:flex;align-items:center;gap:7px;white-space:nowrap;text-decoration:none;font-size:13px;font-weight:600;
+    color:var(--muted);padding:6px 10px;border-radius:7px;
+  }
+  .tabs a:hover{background:var(--surface);color:var(--text)}
+  .tabs a.is-active{background:var(--brand-soft);color:var(--brand-dark)}
+  .tabs a.is-muted{opacity:.5}
+  .count{font-size:11px;font-weight:700;background:var(--surface);color:var(--muted);border-radius:999px;padding:1px 7px}
+  .tabs a.is-active .count{background:var(--white);color:var(--brand-dark)}
+
+  /* ---------- sections ---------- */
+  .section{margin-bottom:44px;scroll-margin-top:calc(var(--sticky-offset) + 8px)}
+  .section__head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .section__head h2{font-size:22px;margin:0;font-weight:650}
+  .section__head .count{font-size:12px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;color:var(--info);background:var(--info-soft);border-radius:4px;padding:1px 6px;white-space:nowrap}
+  .section__body{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px;align-items:start}
+
+  /* diagram */
+  .diagram{
+    position:sticky;top:calc(var(--sticky-offset) + 12px);
+    border:1px solid var(--line);border-radius:var(--radius);background:#fbfbfa;overflow:hidden;
+  }
+  .diagram__bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px 8px 14px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+  .icon-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--white);border-radius:7px;height:30px;padding:0 10px;font-size:12px;font-weight:600}
+  .icon-btn:hover{border-color:var(--brand);color:var(--brand-dark)}
+  .diagram__canvas{position:relative;aspect-ratio:4/3;margin:10px}
+  .diagram__canvas svg{position:absolute;inset:0;width:100%;height:100%}
+  .diagram__hint{margin:0;padding:0 14px 12px;font-size:12px;color:var(--faint)}
+  .shape{fill:#fff;stroke:#8d9196;stroke-width:2}
+  .shape--soft{fill:none;stroke:#d6d6d2;stroke-dasharray:4 5}
+  .wire{stroke:#b38b4d;stroke-width:2;fill:none}
+  .leader{stroke:#a5a8ab;stroke-width:1.2;transition:stroke .15s}
+  .leader-dot{fill:#a5a8ab;transition:fill .15s}
+  .leader.is-active{stroke:var(--brand);stroke-width:2}
+  .leader-dot.is-active{fill:var(--brand)}
+  .leader.is-dim,.leader-dot.is-dim{opacity:.25}
+  .hotspot{
+    position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;
+    border:2px solid var(--white);background:var(--brand);color:#fff;font-size:12px;font-weight:700;
+    box-shadow:0 1px 4px rgba(0,0,0,.25);transition:transform .15s,opacity .15s,background .15s;padding:0;
+  }
+  .hotspot:hover,.hotspot.is-active{transform:translate(-50%,-50%) scale(1.18);background:var(--brand-dark)}
+  .hotspot.is-active{box-shadow:0 0 0 5px rgba(241,90,36,.25)}
+  .hotspot.is-dim{opacity:.3;background:#9a9a9a}
+  .hotspot.is-flash{animation:pulse .9s ease-out 2}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(241,90,36,.55)}100%{box-shadow:0 0 0 16px rgba(241,90,36,0)}}
+
+  /* parts list */
+  .parts{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .parts__head{
+    display:grid;grid-template-columns:44px minmax(0,1fr) 150px 112px 128px;gap:12px;
+    padding:9px 14px;background:var(--surface);font-size:12px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);
+  }
+  .part{
+    display:grid;grid-template-columns:44px minmax(0,1fr) 150px 112px 128px;gap:12px;align-items:center;
+    padding:12px 14px;border-bottom:1px solid var(--line);transition:background .15s;scroll-margin-top:calc(var(--sticky-offset) + 20px);
+  }
+  .part:last-child{border-bottom:0}
+  .part.is-active{background:var(--brand-soft)}
+  .part.is-flash{animation:rowflash 1.4s ease-out}
+  @keyframes rowflash{0%,40%{background:#ffe1d3}100%{background:transparent}}
+  .part[hidden]{display:none}
+  .part__pos{
+    width:32px;height:32px;border-radius:50%;border:1.5px solid var(--brand);background:var(--white);
+    color:var(--brand-dark);font-weight:700;font-size:13px;padding:0;
+  }
+  .part__pos:hover{background:var(--brand);color:#fff}
+  .part__name{font-weight:600;line-height:1.3}
+  .part__note{font-size:12px;color:var(--muted)}
+  .part__meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:3px;font-size:12px;color:var(--muted)}
+  .copy{border:0;background:none;padding:2px 4px;border-radius:4px;color:var(--faint);display:inline-flex}
+  .copy:hover{background:var(--surface);color:var(--text)}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap}
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .pill--stock{color:var(--ok);background:var(--ok-soft)}
+  .pill--order{color:var(--warn);background:var(--warn-soft)}
+  .pill--ask{color:var(--info);background:var(--info-soft)}
+  .part__lead{display:block;font-size:12px;color:var(--faint);margin-top:3px}
+  .part__price{font-weight:700;text-align:right;white-space:nowrap}
+  .part__price small{display:block;font-weight:400;font-size:11px;color:var(--faint)}
+  .part__price--ask{font-weight:400;font-size:12px;color:var(--muted)}
+  mark{background:#ffe7a8;color:inherit;border-radius:2px}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 12px;
+    border-radius:8px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-size:13px;font-weight:650;
+    text-decoration:none;white-space:nowrap;width:100%;
+  }
+  .btn:hover{background:var(--brand-dark);border-color:var(--brand-dark)}
+  .btn--ghost{background:var(--white);color:var(--brand-dark)}
+  .btn--ghost:hover{background:var(--brand-soft);color:var(--brand-dark)}
+  .btn.is-added{background:var(--ok);border-color:var(--ok);color:#fff}
+  .btn--inline{width:auto}
+
+  .empty{
+    border:1px dashed var(--line-strong);border-radius:var(--radius);padding:22px;display:flex;gap:16px;align-items:flex-start;background:#fcfcfb;
+  }
+  .empty__icon{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+  .empty h3{margin:0 0 4px;font-size:16px}
+  .empty p{margin:0 0 12px;color:var(--muted);font-size:14px;max-width:620px}
+  .no-results{padding:18px 14px;color:var(--muted);font-size:14px}
+
+  /* help */
+  .help{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;background:var(--surface);border-radius:var(--radius);padding:24px;margin-top:12px}
+  .help h2{margin:0 0 6px;font-size:20px}
+  .help p{margin:0 0 12px;color:var(--muted)}
+  .help ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+  .help__contact{display:flex;flex-direction:column;gap:8px}
+  .help__contact a.line{display:flex;justify-content:space-between;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px 12px;text-decoration:none;font-size:14px}
+  .help__contact a.line:hover{border-color:var(--brand)}
+  .help__contact a.line span{color:var(--muted)}
+  .back{display:inline-block;margin-top:18px;font-size:13px;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--brand)}
+  .footnote{margin-top:24px;font-size:12px;color:var(--faint)}
+
+  /* list bar + drawer */
+  .listbar{
+    position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;
+    display:flex;align-items:center;gap:14px;background:#1f2225;color:#fff;border-radius:12px;padding:8px 8px 8px 16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;width:min(560px,calc(100% - 24px));
+  }
+  .listbar[hidden]{display:none}
+  .listbar__text{flex:1;min-width:0}
+  .listbar__text small{display:block;color:#b9bcbf;font-size:12px}
+  .listbar .btn{width:auto}
+  .backdrop{position:fixed;inset:0;background:rgba(20,20,20,.35);z-index:40}
+  .backdrop[hidden]{display:none}
+  .drawer{
+    position:fixed;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--white);box-shadow:var(--shadow);
+    display:flex;flex-direction:column;
+  }
+  .drawer[hidden]{display:none}
+  .drawer__head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .drawer__head h2{margin:0;font-size:18px}
+  .drawer__body{flex:1;overflow:auto;padding:16px 18px}
+  .drawer h3{font-size:14px;margin:0 0 4px}
+  .drawer .sub{font-size:12px;color:var(--muted);margin:0 0 10px}
+  .group{margin-bottom:22px}
+  .item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+  .item small{display:block;color:var(--muted);font-size:12px}
+  .qty{display:inline-flex;border:1px solid var(--line-strong);border-radius:7px;overflow:hidden}
+  .qty button{border:0;background:var(--white);width:28px;height:28px}
+  .qty button:hover{background:var(--surface)}
+  .qty span{min-width:26px;text-align:center;line-height:28px;font-size:13px;font-weight:600}
+  .remove{border:0;background:none;color:var(--faint);width:28px;height:28px;border-radius:6px}
+  .remove:hover{background:var(--surface);color:var(--text)}
+  .total{display:flex;justify-content:space-between;font-weight:700;padding:10px 0;border-top:1px solid var(--line);margin-bottom:10px}
+  .field{display:block;margin-bottom:10px;font-size:13px}
+  .field span{display:block;color:var(--muted);margin-bottom:3px}
+  .field input,.field textarea{width:100%;border:1px solid var(--line-strong);border-radius:7px;padding:8px 10px;background:var(--white)}
+  .field textarea{min-height:64px;resize:vertical}
+
+  /* zoom dialog */
+  dialog.zoom{border:0;border-radius:12px;padding:0;width:min(1000px,96vw);max-height:94vh;box-shadow:var(--shadow)}
+  dialog.zoom::backdrop{background:rgba(20,20,20,.55)}
+  dialog.zoom .diagram__canvas{margin:16px}
+
+  .toast{
+    position:fixed;left:50%;bottom:84px;transform:translate(-50%,12px);z-index:60;background:#1f2225;color:#fff;
+    padding:9px 14px;border-radius:8px;font-size:13px;opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .2s,transform .2s,visibility .2s;max-width:calc(100% - 32px);
+  }
+  .toast.is-on{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1080px){
+    .parts__head,.part{grid-template-columns:40px minmax(0,1fr) 130px 100px 118px;gap:10px}
+  }
+  @media (max-width:900px){
+    .page-head{display:block}
+    .steps{margin-top:12px;flex-wrap:wrap}
+    .device{grid-template-columns:auto 1fr}
+    .variant{grid-column:1/-1;align-items:flex-start}
+    .section__body{grid-template-columns:1fr}
+    .diagram{position:static}
+    .diagram__canvas{max-width:520px;margin:10px auto}
+  }
+  @media (max-width:640px){
+    .page{padding:14px 16px 120px}
+    h1{font-size:24px}
+    .steps{display:none}
+    .lead{font-size:14px}
+    .device{padding:12px}
+    .device__icon{width:44px;height:44px}
+    .device__grid{grid-template-columns:1fr}
+    .segmented{width:100%}
+    .segmented button{flex:1;padding:6px 4px}
+    .toolbar{margin:0 -16px 20px;padding:8px 16px}
+    .toolbar__row{flex-wrap:wrap;gap:8px}
+    .search{max-width:none;flex-basis:100%}
+    .parts__head{display:none}
+    .part{
+      grid-template-columns:36px minmax(0,1fr) auto;
+      grid-template-areas:"pos main main" ". avail price" ". action action";
+      row-gap:8px;padding:12px;
+    }
+    .part__pos{grid-area:pos;align-self:start}
+    .part__main{grid-area:main}
+    .part__avail{grid-area:avail}
+    .part__price{grid-area:price;align-self:start}
+    .part__action{grid-area:action}
+    .hotspot{width:26px;height:26px;font-size:11px}
+    .help{grid-template-columns:1fr;padding:18px}
+    .empty{flex-direction:column;padding:16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <nav class="breadcrumbs" aria-label="Ścieżka">
+    <a href="#">Części zamienne</a> › <a href="#">ESAB</a> › ESABMig C420 / C420w
+  </nav>
+
+  <header class="page-head">
+    <div>
+      <h1>ESABMig C420 / C420w – katalog części</h1>
+      <p class="lead">Znajdź część na schemacie albo wyszukaj ją po nazwie lub numerze katalogowym. Części ze sklepu dodasz do koszyka, pozostałe – do zapytania o wycenę.</p>
+    </div>
+    <ol class="steps" aria-label="Jak to działa">
+      <li><b>1</b>Wybierz wersję</li>
+      <li><b>2</b>Wskaż pozycję</li>
+      <li><b>3</b>Dodaj do listy</li>
+    </ol>
+  </header>
+
+  <section class="device" aria-labelledby="device-name">
+    <div class="device__icon" aria-hidden="true">
+      <svg width="36" height="32" viewBox="0 0 36 32" fill="none" stroke="#7a7e83" stroke-width="1.8">
+        <rect x="2" y="3" width="32" height="21" rx="2"/><rect x="6" y="8" width="13" height="8" rx="1"/>
+        <circle cx="25" cy="12" r="2.5"/><circle cx="9" cy="28" r="2.5" fill="#7a7e83"/><circle cx="27" cy="28" r="2.5" fill="#7a7e83"/>
+      </svg>
+    </div>
+    <div>
+      <div class="device__label">Urządzenie</div>
+      <div class="device__name" id="device-name">ESABMig C420 / C420w</div>
+      <div class="device__facts">
+        <span>Numery seryjne: <strong class="mono">627-XXX-XXXX</strong></span>
+        <span>Wersje z chłodzeniem cieczą: <strong>C420w, C420sw</strong></span>
+      </div>
+    </div>
+    <div class="variant">
+      <span class="variant__label" id="variant-label">Twoja wersja (filtruje części)</span>
+      <div class="segmented" role="group" aria-labelledby="variant-label" id="variant">
+        <button type="button" data-variant="all" aria-pressed="true">Wszystkie</button>
+        <button type="button" data-variant="C420" aria-pressed="false">C420</button>
+        <button type="button" data-variant="C420w" aria-pressed="false">C420w</button>
+        <button type="button" data-variant="C420s" aria-pressed="false">C420s</button>
+        <button type="button" data-variant="C420sw" aria-pressed="false">C420sw</button>
+      </div>
+    </div>
+    <details class="device__more">
+      <summary>Numery urządzeń i gdzie znaleźć numer seryjny</summary>
+      <div class="device__grid">
+        <div><span>OrigoMig C420 PRO</span><strong class="mono">0349 302 655</strong></div>
+        <div><span>OrigoMig C420w PRO</span><strong class="mono">0349 303 079</strong></div>
+        <div><span>Numer seryjny</span>Na tabliczce znamionowej urządzenia. Podaj go w zapytaniu – pozwala dobrać część do serii produkcyjnej.</div>
+      </div>
+    </details>
+  </section>
+
+  <div class="toolbar" id="toolbar">
+    <div class="toolbar__row">
+      <label class="search">
+        <span class="sr-only">Szukaj części</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+        <input id="q" type="search" autocomplete="off" placeholder="Nazwa, nr katalogowy lub nr pozycji, np. 0455 890">
+        <button class="search__clear" id="q-clear" type="button" aria-label="Wyczyść wyszukiwanie" hidden>✕</button>
+      </label>
+      <label class="toggle"><input type="checkbox" id="only-stock"> Tylko dostępne od ręki</label>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Zespoły urządzenia"></nav>
+  </div>
+
+  <div id="sections"></div>
+
+  <section class="help" id="pomoc">
+    <div>
+      <h2>Nie możesz znaleźć części?</h2>
+      <p>Zidentyfikujemy ją za Ciebie. Przygotuj:</p>
+      <ul>
+        <li>model i wersję urządzenia,</li>
+        <li>numer seryjny z tabliczki znamionowej,</li>
+        <li>numer pozycji ze schematu albo zdjęcie części.</li>
+      </ul>
+    </div>
+    <div class="help__contact">
+      <button class="btn" type="button" id="help-ask">Wyślij zapytanie o część</button>
+      <a class="line" href="#"><strong>Zadzwoń</strong><span>+48 00 000 00 00 · pn–pt 8–16</span></a>
+      <a class="line" href="#"><strong>Napisz</strong><span>czesci@example.com</span></a>
+    </div>
+  </section>
+
+  <a class="back" href="#">← Wszystkie części do ESABMig C420 / C420w</a>
+  <p class="footnote">Wizualizacja: numery katalogowe, ceny, stany magazynowe i schematy są przykładowe.</p>
+</main>
+
+<div class="listbar" id="listbar" hidden>
+  <div class="listbar__text"><span id="listbar-title"></span><small id="listbar-sub"></small></div>
+  <button class="btn" type="button" id="open-list">Pokaż listę</button>
+</div>
+
+<div class="backdrop" id="backdrop" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-labelledby="drawer-title" role="dialog" aria-modal="true">
+  <div class="drawer__head">
+    <h2 id="drawer-title">Twoja lista części</h2>
+    <button class="remove" type="button" id="close-list" aria-label="Zamknij">✕</button>
+  </div>
+  <div class="drawer__body" id="drawer-body"></div>
+</aside>
+
+<dialog class="zoom" id="zoom" aria-labelledby="zoom-title">
+  <div class="diagram__bar"><strong id="zoom-title"></strong><button class="icon-btn" type="button" id="zoom-close">Zamknij</button></div>
+  <div id="zoom-body"></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- data (example) ---------- */
+const VARIANTS_W = ['C420w', 'C420sw'];
+
+const SECTIONS = [
+  {
+    id: 'podajnik',
+    name: 'Mechanizm podawania drutu',
+    diagram: {
+      title: 'Schemat 1 · mechanizm podawania',
+      svg: `
+        <rect class="shape--soft" x="24" y="26" width="352" height="250" rx="12"/>
+        <line class="wire" x1="18" y1="110" x2="386" y2="110"/>
+        <path class="shape" d="M70 52 L232 40 L238 58 L78 72 Z"/>
+        <circle class="shape" cx="70" cy="60" r="9"/>
+        <circle class="shape" cx="130" cy="110" r="32"/>
+        <circle class="shape" cx="130" cy="110" r="25" stroke-dasharray="3 4"/>
+        <circle class="shape" cx="130" cy="110" r="8"/>
+        <rect class="shape" x="200" y="102" width="130" height="16" rx="8"/>
+        <circle class="shape" cx="130" cy="215" r="27" stroke-width="9" stroke-dasharray="5 4"/>
+        <circle class="shape" cx="130" cy="215" r="8"/>
+        <line class="shape" x1="158" y1="215" x2="192" y2="215" stroke-width="5"/>
+        <rect class="shape" x="192" y="180" width="140" height="72" rx="8"/>
+        <path class="shape" d="M212 192 v48 M226 192 v48 M240 192 v48 M254 192 v48" fill="none"/>`,
+      spots: { 1: [38, 38, 112, 88], 2: [372, 72, 300, 108], 3: [42, 262, 110, 222], 4: [300, 22, 210, 46], 5: [372, 276, 310, 246] }
+    },
+    parts: [
+      { pos: 1, sku: '0455 890 001', name: 'Rolka podająca', note: 'Rowek V, drut 1,0–1,2 mm', status: 'stock', price: 89 },
+      { pos: 2, sku: '0455 072 002', name: 'Prowadnik drutu', status: 'stock', price: 42 },
+      { pos: 3, sku: '0349 312 018', name: 'Koło zębate podajnika', status: 'order', price: 156, lead: '7–10 dni roboczych' },
+      { pos: 4, sku: '0455 441 006', name: 'Ramię dociskowe', status: 'ask' },
+      { pos: 5, sku: '0349 309 102', name: 'Silnik mechanizmu podającego', status: 'stock', price: 1240 }
+    ]
+  },
+  {
+    id: 'obudowa',
+    name: 'Obudowa i podwozie',
+    diagram: {
+      title: 'Schemat 2 · obudowa i elementy mechaniczne',
+      svg: `
+        <path class="shape" d="M40 72 L100 96 L100 214 L40 190 Z"/>
+        <rect class="shape" x="120" y="90" width="170" height="118" rx="4"/>
+        <rect class="shape" x="138" y="108" width="80" height="44" rx="2"/>
+        <circle class="shape" cx="250" cy="130" r="12"/>
+        <path class="shape" d="M150 88 V58 H260 V88" fill="none" stroke-width="6"/>
+        <rect class="shape" x="124" y="220" width="162" height="12" rx="3"/>
+        <line class="shape" x1="128" y1="256" x2="282" y2="256" stroke-width="5"/>
+        <circle class="shape" cx="150" cy="256" r="20"/><circle class="shape" cx="150" cy="256" r="6"/>
+        <circle class="shape" cx="262" cy="256" r="20"/><circle class="shape" cx="262" cy="256" r="6"/>`,
+      spots: { 11: [30, 40, 62, 110], 12: [330, 34, 250, 58], 13: [62, 278, 136, 262], 14: [214, 290, 206, 256], 15: [366, 214, 284, 226] }
+    },
+    parts: [
+      { pos: 11, sku: '0349 312 201', name: 'Panel boczny', status: 'ask' },
+      { pos: 12, sku: '0349 312 205', name: 'Uchwyt transportowy', status: 'stock', price: 135 },
+      { pos: 13, sku: '0349 312 211', name: 'Koło jezdne', note: 'Cena za 1 szt.', status: 'stock', price: 98 },
+      { pos: 14, sku: '0349 312 218', name: 'Oś koła', status: 'ask' },
+      { pos: 15, sku: '0349 312 225', name: 'Osłona dolna', status: 'order', price: 210, lead: '10–14 dni roboczych', variants: VARIANTS_W }
+    ]
+  },
+  {
+    id: 'chlodzenie',
+    name: 'Układ chłodzenia',
+    variants: VARIANTS_W,
+    parts: [],
+    empty: 'Chłodnica, pompa, przewody i zbiornik. Schemat tego zespołu jest w przygotowaniu – wyślij zapytanie, a dobierzemy część po numerze seryjnym.'
+  },
+  {
+    id: 'elektryka',
+    name: 'Elementy elektryczne',
+    parts: [],
+    empty: 'Sterowanie, styczniki, transformator i okablowanie. Elementy elektryczne różnią się między wersjami i seriami, dlatego dobieramy je indywidualnie.'
+  }
+];
+
+const STATUS = {
+  stock: { label: 'W magazynie', lead: 'Wysyłka w 24 h', cls: 'pill--stock' },
+  order: { label: 'Na zamówienie', cls: 'pill--order' },
+  ask:   { label: 'Do wyceny', lead: 'Odpowiemy w 1 dzień rob.', cls: 'pill--ask' }
+};
+
+/* ---------- helpers ---------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const money = new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' });
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+const digits = s => s.replace(/\D/g, '');
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const VB_W = 400, VB_H = 300;
+const ICON_COPY = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>';
+const ICON_ZOOM = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 2h4v4M6 14H2v-4M14 2l-5 5M2 14l5-5"/></svg>';
+
+function readVariant() {
+  try { return localStorage.getItem('c420-variant') || 'all'; } catch { return 'all'; }
+}
+function saveVariant(v) {
+  try { localStorage.setItem('c420-variant', v); } catch { /* storage unavailable */ }
+}
+
+const state = { variant: readVariant(), query: '', onlyStock: false, list: new Map() };
+
+/* ---------- rendering ---------- */
+function diagramMarkup(section, inDialog) {
+  const d = section.diagram;
+  const leaders = Object.entries(d.spots).map(([pos, [cx, cy, tx, ty]]) =>
+    `<line class="leader" data-pos="${pos}" x1="${cx}" y1="${cy}" x2="${tx}" y2="${ty}"/>
+     <circle class="leader-dot" data-pos="${pos}" cx="${tx}" cy="${ty}" r="3"/>`).join('');
+  const spots = section.parts.map(p => {
+    const [cx, cy] = d.spots[p.pos];
+    return `<button type="button" class="hotspot" data-pos="${p.pos}" style="left:${cx / VB_W * 100}%;top:${cy / VB_H * 100}%"
+      aria-label="Pozycja ${p.pos}: ${esc(p.name)}">${p.pos}</button>`;
+  }).join('');
+  return `
+    <div class="diagram__canvas" data-section="${section.id}" ${inDialog ? 'data-dialog' : ''}>
+      <svg viewBox="0 0 ${VB_W} ${VB_H}" aria-hidden="true">${d.svg}${leaders}</svg>
+      ${spots}
+    </div>`;
+}
+
+function partMarkup(section, p) {
+  const s = STATUS[p.status];
+  const tags = (p.variants || []).length ? `<span class="tag">Tylko ${p.variants.join(', ')}</span>` : '';
+  const price = p.price != null
+    ? `<div class="part__price">${money.format(p.price)}<small>brutto</small></div>`
+    : `<div class="part__price part__price--ask">Cena po wycenie</div>`;
+  const action = p.status === 'ask'
+    ? `<button type="button" class="btn btn--ghost" data-add="ask">Do zapytania</button>`
+    : `<button type="button" class="btn" data-add="buy">Do koszyka</button>`;
+  return `
+    <li class="part" id="part-${section.id}-${p.pos}" data-section="${section.id}" data-pos="${p.pos}">
+      <button type="button" class="part__pos" data-locate aria-label="Pokaż pozycję ${p.pos} na schemacie">${p.pos}</button>
+      <div class="part__main">
+        <div class="part__name" data-hl="name">${esc(p.name)}</div>
+        ${p.note ? `<div class="part__note">${esc(p.note)}</div>` : ''}
+        <div class="part__meta">
+          <span class="mono" data-hl="sku">${p.sku}</span>
+          <button type="button" class="copy" data-copy="${p.sku}" aria-label="Kopiuj numer ${p.sku}" title="Kopiuj numer katalogowy">${ICON_COPY}</button>
+          ${tags}
+        </div>
+      </div>
+      <div class="part__avail"><span class="pill ${s.cls}">${s.label}</span><span class="part__lead">${p.lead || s.lead}</span></div>
+      ${price}
+      <div class="part__action">${action}</div>
+    </li>`;
+}
+
+function sectionMarkup(section) {
+  const tag = section.variants ? `<span class="tag">Dotyczy: ${section.variants.join(', ')}</span>` : '';
+  let body;
+  if (section.parts.length) {
+    body = `
+      <div class="section__body">
+        <figure class="diagram" style="margin:0">
+          <div class="diagram__bar"><span>${section.diagram.title}</span>
+            <button type="button" class="icon-btn" data-zoom="${section.id}">${ICON_ZOOM} Powiększ</button></div>
+          ${diagramMarkup(section)}
+          <figcaption class="diagram__hint">Kliknij numer na schemacie, aby przejść do części.</figcaption>
+        </figure>
+        <div>
+          <ul class="parts" aria-label="Części: ${esc(section.name)}">
+            <li class="parts__head" aria-hidden="true"><span>Poz.</span><span>Część</span><span>Dostępność</span><span style="text-align:right">Cena</span><span></span></li>
+            ${section.parts.map(p => partMarkup(section, p)).join('')}
+          </ul>
+          <div class="no-results" hidden>Brak części pasujących do filtrów w tym zespole.</div>
+        </div>
+      </div>`;
+  } else {
+    body = `
+      <div class="empty">
+        <div class="empty__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 10h6M10 7v6"/></svg></div>
+        <div>
+          <h3>Schemat w przygotowaniu</h3>
+          <p data-empty-text>${section.empty}</p>
+          <button type="button" class="btn btn--ghost btn--inline" data-ask-section="${section.id}">Zapytaj o część z tego zespołu</button>
+        </div>
+      </div>`;
+  }
+  return `
+    <section class="section" id="${section.id}" aria-labelledby="h-${section.id}">
+      <div class="section__head"><h2 id="h-${section.id}">${section.name}</h2><span class="count" data-count></span>${tag}</div>
+      ${body}
+    </section>`;
+}
+
+$('#sections').innerHTML = SECTIONS.map(sectionMarkup).join('');
+$('#tabs').innerHTML = SECTIONS.map(s => `<a href="#${s.id}" data-tab="${s.id}">${s.name}<span class="count" data-count></span></a>`).join('');
+
+/* ---------- filtering ---------- */
+function applies(variants) {
+  return state.variant === 'all' || !variants || variants.includes(state.variant);
+}
+function matches(p) {
+  if (state.onlyStock && p.status !== 'stock') return false;
+  const q = state.query.trim();
+  if (!q) return true;
+  if (/^\d{1,2}$/.test(q)) return String(p.pos) === q || digits(p.sku).includes(q);
+  const qd = digits(q);
+  if (qd.length >= 3 && qd.length === q.replace(/\s/g, '').length) return digits(p.sku).includes(qd);
+  return norm(p.name).includes(norm(q)) || norm(p.note || '').includes(norm(q));
+}
+function highlight(el, text, q) {
+  el.textContent = text;
+  if (!q) return;
+  const i = norm(text).indexOf(norm(q));
+  if (i < 0) return;
+  el.innerHTML = esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+}
+
+function applyFilters() {
+  const q = state.query.trim();
+  let total = 0;
+  SECTIONS.forEach(section => {
+    const secEl = document.getElementById(section.id);
+    const tabEl = $(`[data-tab="${section.id}"]`);
+    const sectionApplies = applies(section.variants);
+    let visible = 0;
+
+    section.parts.forEach(p => {
+      const row = document.getElementById(`part-${section.id}-${p.pos}`);
+      const show = sectionApplies && applies(p.variants) && matches(p);
+      row.hidden = !show;
+      if (show) visible++;
+      highlight($('[data-hl="name"]', row), p.name, /\d/.test(q) ? '' : q);
+      $$(`.hotspot[data-pos="${p.pos}"], .leader[data-pos="${p.pos}"], .leader-dot[data-pos="${p.pos}"]`, secEl)
+        .forEach(el => el.classList.toggle('is-dim', !show));
+    });
+
+    const noRes = $('.no-results', secEl);
+    if (noRes) noRes.hidden = visible > 0;
+    if (!section.parts.length) {
+      const txt = $('[data-empty-text]', secEl);
+      txt.textContent = sectionApplies ? section.empty : `Ten zespół nie występuje w wersji ${state.variant}.`;
+      $('[data-ask-section]', secEl).hidden = !sectionApplies;
+    }
+
+    const label = section.parts.length ? `${visible} z ${section.parts.length}` : (sectionApplies ? 'brak schematu' : 'nie dotyczy');
+    $('[data-count]', secEl).textContent = label;
+    $('[data-count]', tabEl).textContent = section.parts.length ? visible : '–';
+    tabEl.classList.toggle('is-muted', !sectionApplies || (section.parts.length > 0 && visible === 0));
+    total += visible;
+  });
+  $('#q-clear').hidden = !q;
+  return total;
+}
+
+/* ---------- diagram ↔ list linking ---------- */
+function setActive(sectionId, pos, on) {
+  const sec = document.getElementById(sectionId);
+  $$(`[data-pos="${pos}"]`, sec).forEach(el => {
+    if (el.matches('.part, .hotspot, .leader, .leader-dot')) el.classList.toggle('is-active', on);
+  });
+}
+function flash(el) {
+  el.classList.remove('is-flash');
+  void el.offsetWidth;
+  el.classList.add('is-flash');
+}
+function goToRow(sectionId, pos) {
+  const row = document.getElementById(`part-${sectionId}-${pos}`);
+  if (!row || row.hidden) { toast('Ta część jest ukryta przez filtry'); return; }
+  row.scrollIntoView({ block: 'center' });
+  flash(row);
+  $('[data-add]', row).focus({ preventScroll: true });
+}
+
+document.addEventListener('mouseover', e => {
+  const t = e.target.closest('.part[data-pos], .hotspot');
+  if (!t || t.closest('dialog')) return;
+  const sec = t.closest('.section').id;
+  setActive(sec, t.dataset.pos, true);
+  t.addEventListener('mouseleave', () => setActive(sec, t.dataset.pos, false), { once: true });
+});
+
+/* ---------- list (cart + inquiry) ---------- */
+function addToList(key, item) {
+  const existing = state.list.get(key);
+  if (existing) existing.qty++;
+  else state.list.set(key, { ...item, qty: 1 });
+  renderList();
+}
+function renderList() {
+  const items = [...state.list.values()];
+  const buy = items.filter(i => i.kind === 'buy');
+  const ask = items.filter(i => i.kind === 'ask');
+  const count = items.reduce((n, i) => n + i.qty, 0);
+  const sum = buy.reduce((n, i) => n + i.qty * i.price, 0);
+
+  $('#listbar').hidden = count === 0 || !$('#drawer').hidden;
+  $('#listbar-title').textContent = `Lista części: ${count} szt.`;
+  $('#listbar-sub').textContent = [buy.length && `do koszyka ${money.format(sum)}`, ask.length && `do wyceny: ${ask.length}`].filter(Boolean).join(' · ');
+
+  const row = i => `
+    <div class="item">
+      <div>${esc(i.name)}<small>${i.pos ? `Poz. ${i.pos} · ` : ''}${i.sku ? `<span class="mono">${i.sku}</span>` : esc(i.section)}</small></div>
+      <div class="qty"><button type="button" data-qty="-1" data-key="${i.key}" aria-label="Mniej">−</button><span>${i.qty}</span><button type="button" data-qty="1" data-key="${i.key}" aria-label="Więcej">+</button></div>
+      <button type="button" class="remove" data-remove="${i.key}" aria-label="Usuń ${esc(i.name)}">✕</button>
+    </div>`;
+
+  $('#drawer-body').innerHTML = (count === 0 ? '<p class="sub">Lista jest pusta.</p>' : '') +
+    (buy.length ? `
+      <div class="group">
+        <h3>Do koszyka</h3><p class="sub">Dostępne w sklepie – zamówisz od razu.</p>
+        ${buy.map(row).join('')}
+        <div class="total"><span>Razem</span><span>${money.format(sum)}</span></div>
+        <a class="btn" href="#">Przejdź do koszyka</a>
+      </div>` : '') +
+    (ask.length ? `
+      <form class="group" id="ask-form">
+        <h3>Do wyceny</h3><p class="sub">Sprawdzimy dostępność i odeślemy ofertę.</p>
+        ${ask.map(row).join('')}
+        <div style="height:10px"></div>
+        <label class="field"><span>E-mail</span><input type="email" required placeholder="jan@firma.pl"></label>
+        <label class="field"><span>Numer seryjny urządzenia</span><input class="mono" placeholder="627-XXX-XXXX" value=""></label>
+        <label class="field"><span>Wersja</span><input value="${state.variant === 'all' ? '' : state.variant}" placeholder="np. C420w"></label>
+        <label class="field"><span>Uwagi (opcjonalnie)</span><textarea placeholder="Np. opis uszkodzenia, zdjęcie prześlemy mailem"></textarea></label>
+        <button class="btn" type="submit">Wyślij zapytanie</button>
+      </form>` : '');
+  syncAddButtons();
+}
+function syncAddButtons() {
+  $$('.part').forEach(row => {
+    const btn = $('[data-add]', row);
+    const item = state.list.get(`${row.dataset.section}-${row.dataset.pos}`);
+    const base = btn.dataset.add === 'buy' ? 'Do koszyka' : 'Do zapytania';
+    btn.textContent = item ? `✓ Na liście (${item.qty})` : base;
+    btn.classList.toggle('is-added', !!item);
+  });
+}
+function openList() {
+  $('#drawer').hidden = false;
+  $('#backdrop').hidden = false;
+  $('#listbar').hidden = true;
+  $('#close-list').focus();
+}
+function closeList() {
+  $('#drawer').hidden = true;
+  $('#backdrop').hidden = true;
+  renderList();
+}
+
+/* ---------- misc UI ---------- */
+let toastTimer;
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('is-on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('is-on'), 2200);
+}
+function setVariant(v) {
+  state.variant = v;
+  saveVariant(v);
+  $$('#variant button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.variant === v)));
+  applyFilters();
+}
+function askSection(sectionId) {
+  const s = SECTIONS.find(x => x.id === sectionId);
+  addToList(`free-${sectionId}`, { key: `free-${sectionId}`, kind: 'ask', name: 'Część do identyfikacji', section: s ? s.name : 'Dowolny zespół' });
+  openList();
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  const t = e.target;
+  const hotspot = t.closest('.hotspot');
+  if (hotspot) {
+    const canvas = hotspot.closest('.diagram__canvas');
+    if (canvas.hasAttribute('data-dialog')) $('#zoom').close();
+    goToRow(canvas.dataset.section, hotspot.dataset.pos);
+    return;
+  }
+  const locate = t.closest('[data-locate]');
+  if (locate) {
+    const row = locate.closest('.part');
+    const spot = $(`.diagram__canvas:not([data-dialog]) .hotspot[data-pos="${row.dataset.pos}"]`, document.getElementById(row.dataset.section));
+    spot.scrollIntoView({ block: 'nearest' });
+    setActive(row.dataset.section, row.dataset.pos, true);
+    flash(spot);
+    setTimeout(() => setActive(row.dataset.section, row.dataset.pos, false), 1600);
+    return;
+  }
+  const add = t.closest('[data-add]');
+  if (add) {
+    const row = add.closest('.part');
+    const s = SECTIONS.find(x => x.id === row.dataset.section);
+    const p = s.parts.find(x => String(x.pos) === row.dataset.pos);
+    const key = `${s.id}-${p.pos}`;
+    addToList(key, { key, kind: add.dataset.add, name: p.name, sku: p.sku, pos: p.pos, price: p.price, section: s.name });
+    toast(add.dataset.add === 'buy' ? `Dodano do koszyka: ${p.name}` : `Dodano do zapytania: ${p.name}`);
+    return;
+  }
+  const copy = t.closest('[data-copy]');
+  if (copy) {
+    const sku = copy.dataset.copy;
+    Promise.resolve(navigator.clipboard && navigator.clipboard.writeText(sku))
+      .then(() => toast(`Skopiowano ${sku}`), () => toast(sku));
+    return;
+  }
+  const zoom = t.closest('[data-zoom]');
+  if (zoom) {
+    const s = SECTIONS.find(x => x.id === zoom.dataset.zoom);
+    $('#zoom-title').textContent = s.diagram.title;
+    $('#zoom-body').innerHTML = diagramMarkup(s, true);
+    $$('.hotspot', $('#zoom-body')).forEach(h => {
+      const row = document.getElementById(`part-${s.id}-${h.dataset.pos}`);
+      h.classList.toggle('is-dim', row.hidden);
+    });
+    $('#zoom').showModal();
+    return;
+  }
+  const askSec = t.closest('[data-ask-section]');
+  if (askSec) { askSection(askSec.dataset.askSection); return; }
+  const qty = t.closest('[data-qty]');
+  if (qty) {
+    const item = state.list.get(qty.dataset.key);
+    item.qty += Number(qty.dataset.qty);
+    if (item.qty < 1) state.list.delete(qty.dataset.key);
+    renderList();
+    return;
+  }
+  const remove = t.closest('[data-remove]');
+  if (remove) { state.list.delete(remove.dataset.remove); renderList(); return; }
+  const variant = t.closest('#variant button');
+  if (variant) setVariant(variant.dataset.variant);
+});
+
+$('#help-ask').addEventListener('click', () => askSection(null));
+$('#open-list').addEventListener('click', openList);
+$('#close-list').addEventListener('click', closeList);
+$('#backdrop').addEventListener('click', closeList);
+$('#zoom-close').addEventListener('click', () => $('#zoom').close());
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#drawer').hidden) closeList(); });
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'ask-form') return;
+  e.preventDefault();
+  [...state.list.values()].filter(i => i.kind === 'ask').forEach(i => state.list.delete(i.key));
+  renderList();
+  toast('Zapytanie wysłane (wizualizacja)');
+});
+
+let searchTimer;
+$('#q').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.query = e.target.value;
+    const total = applyFilters();
+    const first = $('.part:not([hidden])');
+    if (state.query.trim() && first) first.scrollIntoView({ block: 'center' });
+    if (state.query.trim() && !total) toast('Nic nie znaleziono – możesz wysłać zapytanie');
+  }, 180);
+});
+$('#q-clear').addEventListener('click', () => {
+  $('#q').value = '';
+  state.query = '';
+  applyFilters();
+  $('#q').focus();
+});
+$('#only-stock').addEventListener('change', e => { state.onlyStock = e.target.checked; applyFilters(); });
+
+/* sticky offset + scrollspy */
+const toolbar = $('#toolbar');
+const setOffset = () => document.documentElement.style.setProperty('--sticky-offset', toolbar.offsetHeight + 'px');
+new ResizeObserver(setOffset).observe(toolbar);
+
+const spy = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    $$('#tabs a').forEach(a => a.classList.toggle('is-active', a.dataset.tab === en.target.id));
+    const active = $(`#tabs a[data-tab="${en.target.id}"]`);
+    const tabs = $('#tabs');
+    if (active.offsetLeft < tabs.scrollLeft || active.offsetLeft + active.offsetWidth > tabs.scrollLeft + tabs.clientWidth) {
+      tabs.scrollLeft = active.offsetLeft - 16;
+    }
+  });
+}, { rootMargin: '-35% 0px -60% 0px' });
+SECTIONS.forEach(s => spy.observe(document.getElementById(s.id)));
+
+setVariant(state.variant);
+renderList();
+</script>
+</body>
+</html>
